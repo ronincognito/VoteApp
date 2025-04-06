@@ -9,7 +9,7 @@ from threading import Lock
 from dotenv import load_dotenv
 
 import numpy as np
-from flask import Flask, render_template, request, jsonify, Response, g
+from flask import Flask, render_template, request, jsonify, Response, g, stream_with_context
 import psycopg2
 import psycopg2.extras
 
@@ -266,14 +266,13 @@ def voting_status():
 def events():
     def event_stream():
         last_state = None
-        with app.app_context():  # Ensure that we are in the application context
-            while True:
-                current_state = get_config('voting_open') == '1'
-                if current_state != last_state:
-                    last_state = current_state
-                    yield f"data: {current_state}\n\n"
-                time.sleep(1)
-    return Response(event_stream(), mimetype="text/event-stream")
+        while True:
+            current_state = get_config('voting_open') == '1'
+            if current_state != last_state:
+                last_state = current_state
+                yield f"data: {current_state}\n\n"
+            time.sleep(1)
+    return Response(stream_with_context(event_stream()), mimetype="text/event-stream")
 
 @app.route('/download_csv')
 def download_csv():
