@@ -171,23 +171,20 @@
 	}
 
 	// Handle server-sent events to check voting status --------------------------------
-	const eventSource = new EventSource('/events');
-	let lastVotingState = true;
-	let firstTime = true;
-
-	eventSource.onmessage = function(event) {
-		const votingStatus = (event.data.toLowerCase() === 'true');
-		if (votingStatus !== lastVotingState) {
-			if (! firstTime) {
-				location.reload();  // Reload when the voting state has changed
-			}
-		}
-		firstTime = false;
-		lastVotingState = votingStatus;
-		if (!votingStatus) {
-			document.getElementById('voteStatus').innerHTML = "Je kunt nog niet stemmen.<br> Probeer het later."
-		}
-	};
+	let lastVotingState = {{ 'true' if voting_open else 'false' }};
+	setInterval(() => {
+		fetch('/voting_status')
+			.then(response => response.json())
+			.then(data => {
+				const votingStatus = data.voting_open;
+				if (votingStatus !== lastVotingState) {
+					location.reload(); // reload if voting status changes
+				}
+			})
+			.catch(err => {
+				console.error("Failed to fetch voting status", err);
+			});
+	}, 2000);
         
     // check user ID once page has loaded ----------------------------------------------
     document.addEventListener("DOMContentLoaded", function() {
