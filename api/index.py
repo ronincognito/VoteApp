@@ -209,8 +209,8 @@ def toggle_vote_check():
     status = "enabled" if check_repeated_votes else "disabled"
     return jsonify({'status': f'Check for repeated votes is now {status}'})
     
-if __name__ == '__main__':
-	# app.run(debug=True)
-    app.run(host='0.0.0.0', port=80, debug=True)
+# if __name__ == '__main__':
+# 	# app.run(debug=True)
+#     app.run(host='0.0.0.0', port=80, debug=True)
     
 
