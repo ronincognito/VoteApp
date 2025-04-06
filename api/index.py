@@ -1,41 +1,126 @@
-from flask import Flask, render_template, request, jsonify, Response
-from threading import Lock
-from io import StringIO
-from datetime import datetime
-from collections import Counter
-
-import numpy as np
-import time  # Import the time module
+import os
+import json
+import time
 import csv
 import logging
+from datetime import datetime
+from io import StringIO
+from threading import Lock
+from dotenv import load_dotenv
 
+import numpy as np
+from flask import Flask, render_template, request, jsonify, Response, g
+import psycopg2
+import psycopg2.extras
+
+load_dotenv(dotenv_path='.env.local')
+
+# --- Database Helpers ---
+# Expect the PostgreSQL connection URL from an environment variable.
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+def get_db():
+    # Cache the connection on Flask's g object.
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
+    return db
+
+def init_db():
+    db = get_db()
+    with db:
+        with db.cursor() as cur:
+            # Create config table
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS config (
+                    key TEXT PRIMARY KEY,
+                    value TEXT
+                )
+            ''')
+            # Create users table (user_id -> user_index)
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    user_id TEXT PRIMARY KEY,
+                    user_index INTEGER
+                )
+            ''')
+            # Create current_votes table
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS current_votes (
+                    id SERIAL PRIMARY KEY,
+                    user_id TEXT,
+                    vote_value REAL
+                )
+            ''')
+            # Create rounds table to store outcomes (votes and user indices stored as JSON)
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS rounds (
+                    id SERIAL PRIMARY KEY,
+                    timestamp TEXT,
+                    avg REAL,
+                    sdev REAL,
+                    median REAL,
+                    votes TEXT,
+                    users TEXT
+                )
+            ''')
+            # Initialize config values if they do not exist
+            for key, default in [('voting_open', '0'), ('check_repeated_votes', '1')]:
+                cur.execute('SELECT value FROM config WHERE key = %s', (key,))
+                if cur.fetchone() is None:
+                    cur.execute('INSERT INTO config (key, value) VALUES (%s, %s)', (key, default))
+    db.commit()
+
+def close_db(error=None):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
+
+# --- End Database Helpers ---
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+app.teardown_appcontext(close_db)
+
+# Initialize logging filter as before.
 class NoVoteCountFilter(logging.Filter):
     def filter(self, record):
         return '/vote_count' not in record.getMessage()
 
 log = logging.getLogger('werkzeug')
-log.addFilter(NoVoteCountFilter()) # don't pollute the log in the terminal window with vote_count messages
+log.addFilter(NoVoteCountFilter())
 
-app = Flask(__name__)
-app.secret_key = 'your_secret_key'
-
-# Global variables to hold voting state
-votes = [] 								# list of currently submitted votes and user_id index
-unique_users = set()  					# Persistent across rounds, stores all unique user_id's who have at least voted once
-user_id_to_index = {} 					#dictionary that holds indices to all unique user_id's, indices are used for compactly presenting users in the results table
-current_round_voted_users = set()  		# Track users who voted in the current round
-voting_open = False
+# A lock for admin actions (if needed, e.g. concurrent writes)
 admin_lock = Lock()
-stored_votes = [] 						# collates the results of all voting rounds
-max_votes = 100 						# don't store too many voting round. 100 should be enough.
-check_repeated_votes = True  			# check for repeated votes by a single user - or not
 
+# Ensure database tables exist at startup.
+with app.app_context():
+    init_db()
+
+# Helper functions to get and update config values
+def get_config(key):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT value FROM config WHERE key = %s', (key,))
+        row = cur.fetchone()
+    return row['value'] if row else None
+
+def set_config(key, value):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('''
+            INSERT INTO config (key, value)
+            VALUES (%s, %s)
+            ON CONFLICT (key) 
+            DO UPDATE SET value = EXCLUDED.value
+        ''', (key, value))
+    db.commit()
+
+# --- Routes ---
 @app.route('/')
 def home():
-    if voting_open:
-        return render_template('vote.html', voting_open=True)
-    else:
-        return render_template('vote.html', voting_open=False)
+    voting_open = get_config('voting_open') == '1'
+    return render_template('vote.html', voting_open=voting_open)
 
 @app.route('/admin')
 def admin_page():
@@ -43,57 +128,66 @@ def admin_page():
 
 @app.route('/open_vote', methods=['POST'])
 def open_vote():
-    global votes, voting_open, current_round_voted_users
     with admin_lock:
-        votes = [] # clear stored votes when starting new voting round
-        current_round_voted_users = set() # also clear set of stored voters
-        voting_open = True
+        db = get_db()
+        with db.cursor() as cur:
+            cur.execute('DELETE FROM current_votes')
+        db.commit()
+        set_config('voting_open', '1')
     return jsonify({'status': 'Er kan nu gestemd worden'})
 
 @app.route('/close_vote', methods=['POST'])
 def close_vote():
-    global voting_open, stored_votes
-    median_vote = None  # Ensure it's always defined
+    db = get_db()
     with admin_lock:
-        voting_open = False
-        if votes:
-            vote_values = [v[0] for v in votes]  # Extract vote values
-            avg_vote = round(np.mean(vote_values), 2)
-            stddev_vote = round(np.std(vote_values), 2)
-            median_vote = round(np.median(vote_values), 2)
-            
-            # Get the current date and time
+        set_config('voting_open', '0')
+        with db.cursor() as cur:
+            cur.execute('SELECT vote_value FROM current_votes')
+            rows = cur.fetchall()
+        votes_list = [row['vote_value'] for row in rows]
+        if votes_list:
+            avg_vote = float(round(np.mean(votes_list), 2))
+            stddev_vote = float(round(np.std(votes_list), 2))
+            median_vote = float(round(np.median(votes_list), 2))
             current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-            # Store the current vote outcome in the stored_votes list
-            stored_votes.append({
-                'timestamp': current_time,
-                'avg': avg_vote,
-                'sdev': stddev_vote,
-                'median': median_vote,  # Store median
-                'votes': [v[0] for v in votes],  # Store vote values
-                'users': [v[1] for v in votes]  # Store user reference index
-            })
-            # Keep only the last max_votes outcomes
-            if len(stored_votes) > max_votes:
-                stored_votes.pop(0)
-                
+            # Get user IDs from current_votes
+            with db.cursor() as cur:
+                cur.execute('SELECT user_id FROM current_votes')
+                users_in_votes = [row['user_id'] for row in cur.fetchall()]
+            # For each user_id, get the user_index.
+            user_indices = []
+            with db.cursor() as cur:
+                for user in users_in_votes:
+                    cur.execute('SELECT user_index FROM users WHERE user_id = %s', (user,))
+                    result = cur.fetchone()
+                    user_indices.append(result['user_index'])
+            with db.cursor() as cur:
+                cur.execute('''
+                    INSERT INTO rounds (timestamp, avg, sdev, median, votes, users)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                ''', (current_time, avg_vote, stddev_vote, median_vote,
+                      json.dumps(votes_list), json.dumps(user_indices)))
+            db.commit()
         else:
             avg_vote = stddev_vote = None
-            
+
+        # Clear current_votes after closing the round.
+        with db.cursor() as cur:
+            cur.execute('DELETE FROM current_votes')
+        db.commit()
+
     return jsonify({
-    	'status': 'Stemronde is gesloten', 
-    	'avg': avg_vote, 
-    	'sdev': stddev_vote, 
-    	'median': median_vote,  # Include median in response
-    	'votes': votes
+        'status': 'Stemronde is gesloten',
+        'avg': avg_vote,
+        'sdev': stddev_vote,
+        'median': median_vote,
+        'votes': votes_list
     })
-    
 
 @app.route('/vote', methods=['POST'])
 def vote():
-
-    if not voting_open:
+    if get_config('voting_open') != '1':
         return jsonify({'error': 'Stemronde is gesloten'}), 403
 
     user_id = request.form.get('user_id')
@@ -102,115 +196,131 @@ def vote():
         vote_value = float(vote_value)
     except (ValueError, TypeError):
         return jsonify({'error': 'Ongeldige stemwaarde'}), 400
-    
-    print(f"Received vote from user: {user_id}")  # Debugging
-    print(f"vote value: {vote_value}")  # Debugging
 
+    print(f"Received vote from user: {user_id}")
+    print(f"vote value: {vote_value}")
 
-    # Check if user has already voted in the current round
-    if check_repeated_votes and user_id in current_round_voted_users:
-        print(f"Duplicate vote detected for user: {user_id}")  # Debugging
-        return jsonify({'error': '\nJe hebt al gestemd'}), 403
+    db = get_db()
+    check_repeated_votes = get_config('check_repeated_votes') == '1'
+    with db.cursor() as cur:
+        if check_repeated_votes:
+            cur.execute('SELECT 1 FROM current_votes WHERE user_id = %s', (user_id,))
+            if cur.fetchone():
+                print(f"Duplicate vote detected for user: {user_id}")
+                return jsonify({'error': '\nJe hebt al gestemd'}), 403
 
     with admin_lock:
-        # Track if user ID has already been stored
-        if user_id not in unique_users:
-            # Assign a new index for new users
-            unique_users.add(user_id) # add to the set of all unique voter ID's
-            user_index = len(user_id_to_index)
-            user_id_to_index[user_id] = user_index # add ID to user_id index dictionary 
-        else:
-            # Use existing index for already existing users
-            user_index = user_id_to_index[user_id]
-        
-        # Mark user as voted
-        current_round_voted_users.add(user_id)
+        with db.cursor() as cur:
+            cur.execute('SELECT user_index FROM users WHERE user_id = %s', (user_id,))
+            row = cur.fetchone()
+            if row is None:
+                cur.execute('SELECT COUNT(*) as cnt FROM users')
+                new_index = cur.fetchone()['cnt']
+                cur.execute('INSERT INTO users (user_id, user_index) VALUES (%s, %s)', (user_id, new_index))
+                user_index = new_index
+            else:
+                user_index = row['user_index']
+            cur.execute('INSERT INTO current_votes (user_id, vote_value) VALUES (%s, %s)', (user_id, vote_value))
+        db.commit()
 
-        # Append the vote with user index
-        votes.append((vote_value, user_index))
-
-        
-    print(f"votes array: {votes}")  # Debugging
-    print(f"unique_users array: {unique_users}")  # Debugging
-    print(f"ID's that have already voted: {current_round_voted_users}")  # Debugging
-
+    print("Vote stored in database.")
     return jsonify({'status': '\nJe stem is opgeslagen'})
 
 @app.route('/vote_count', methods=['GET'])
 def vote_count():
-    return jsonify({'count': len(votes)})
-    
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT COUNT(*) as cnt FROM current_votes')
+        count = cur.fetchone()['cnt']
+    return jsonify({'count': count})
+
 @app.route('/stored_vote_count', methods=['GET'])
 def stored_vote_count():
-    # Get the count of stored votes
-    vote_count = len(stored_votes)
-
-    # Get the last 10 rounds (assuming stored_votes is a list of rounds)
-    last_10_votes = stored_votes[-10:] if len(stored_votes) > 10 else stored_votes
-
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT COUNT(*) as cnt FROM rounds')
+        vote_count_val = cur.fetchone()['cnt']
+        cur.execute('SELECT * FROM rounds ORDER BY id DESC LIMIT 10')
+        rounds_data = cur.fetchall()
+    last_10_votes = []
+    for row in rounds_data:
+        last_10_votes.append({
+            'timestamp': row['timestamp'],
+            'avg': row['avg'],
+            'sdev': row['sdev'],
+            'median': row['median'],
+            'votes': json.loads(row['votes']),
+            'users': json.loads(row['users'])
+        })
     return jsonify({
-        'count': vote_count,
+        'count': vote_count_val,
         'last_10_votes': last_10_votes
     })
 
 @app.route('/voting_status', methods=['GET'])
 def voting_status():
-    global voting_open
-    return jsonify({'voting_open': voting_open})
-    
+    status = get_config('voting_open') == '1'
+    return jsonify({'voting_open': status})
+
 @app.route('/events')
 def events():
     def event_stream():
         last_state = None
-        while True:
-            global voting_open
-            if voting_open != last_state:
-                last_state = voting_open
-                yield f"data: {voting_open}\n\n"
-            time.sleep(1)  # Sleep for a short time to avoid overwhelming the server
-
+        with app.app_context():  # Ensure that we are in the application context
+            while True:
+                current_state = get_config('voting_open') == '1'
+                if current_state != last_state:
+                    last_state = current_state
+                    yield f"data: {current_state}\n\n"
+                time.sleep(1)
     return Response(event_stream(), mimetype="text/event-stream")
 
 @app.route('/download_csv')
 def download_csv():
-    global stored_votes
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM rounds ORDER BY id')
+        rounds_data = cur.fetchall()
 
-    # Create a CSV in memory
     si = StringIO()
     writer = csv.writer(si)
-
-    # Write CSV header
-    writer.writerow(['Time','Average', 'Standard Deviation', 'Votes', 'Users'])
-
-    # Write the last max_votes votes outcomes
-    for vote_outcome in stored_votes:
-        writer.writerow([vote_outcome['timestamp'], vote_outcome['avg'], vote_outcome['sdev'], ','.join(map(str, vote_outcome['votes'])), ','.join(map(str, vote_outcome['users']))])
-
-    # Serve the CSV file as a downloadable file
+    writer.writerow(['Time', 'Average', 'Standard Deviation', 'Votes', 'Users'])
+    for row in rounds_data:
+        writer.writerow([
+            row['timestamp'],
+            row['avg'],
+            row['sdev'],
+            row['median'],
+            json.loads(row['votes']),
+            json.loads(row['users'])
+        ])
     output = si.getvalue()
     si.close()
 
-    return Response(output, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=stored_votes.csv"})
+    return Response(output, mimetype="text/csv",
+                    headers={"Content-Disposition": "attachment;filename=stored_votes.csv"})
 
 @app.route('/clear_votes', methods=['POST'])
 def clear_votes():
-    global stored_votes
-    stored_votes.clear()
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute('DELETE FROM rounds')
+    db.commit()
     return jsonify({'status': 'Stemrondes gewist'})
-    
+
 @app.route('/get_vote_check_status', methods=['GET'])
 def get_vote_check_status():
-    return jsonify({'status': check_repeated_votes})
-    
+    status = get_config('check_repeated_votes') == '1'
+    return jsonify({'status': status})
+
 @app.route('/toggle_vote_check', methods=['POST'])
 def toggle_vote_check():
-    global check_repeated_votes
-    check_repeated_votes = not check_repeated_votes
-    status = "enabled" if check_repeated_votes else "disabled"
-    return jsonify({'status': f'Check for repeated votes is now {status}'})
-    
-# if __name__ == '__main__':
-# 	# app.run(debug=True)
-#     app.run(host='0.0.0.0', port=80, debug=True)
-    
+    current = get_config('check_repeated_votes') == '1'
+    new_status = '0' if current else '1'
+    set_config('check_repeated_votes', new_status)
+    status_str = "enabled" if new_status == '1' else "disabled"
+    return jsonify({'status': f'Check for repeated votes is now {status_str}'})
 
+# No need for app.run here when using a serverless deployment.
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80, debug=True)
