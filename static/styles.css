@@ -1,0 +1,250 @@
+:root {
+    --bodyText: #222222;
+    --accentBlue: #1F7fDB;
+    --hoverBlue: #357ABD;
+    --accentOrange: #F45E00;
+    --darkerOrange: #D65301;
+    --desatOrange: #F7AA7B;
+    --disabledGrey: #c3c3c3;
+    --disabledUltraGrey: #efefef;
+    --mediumGrey: #888;
+    --darkGrey: #747A7A;
+    --deleteRed: #990000;
+}
+
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #d3d3d3;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: var(--bodyText);
+}
+
+h1, h2 {
+    color: var(--disabledGrey);
+    text-align: center;
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 32px;
+    margin-top: 16px;
+}
+
+h2 {
+    color: var(--bodyText);
+    font-size: 16px;
+    font-weight: normal;
+}
+
+/* Message Area */
+.message {
+    width: 300px;
+    max-width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    height: 30px;
+    color: var(--mediumGrey);
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.message.regular {
+    color: var(--accentBlue);
+}
+
+.message.important {
+    color: var(--accentOrange);
+}
+
+/* Containers */
+.content-container, .keypad-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.keypad-container {
+    justify-content: center;
+    max-width: 250px;
+    margin-top: 30px;
+}
+
+/* Keypad */
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-items: center;
+}
+
+.keypad button, #voteBtn, button {
+    padding: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.keypad button {
+    background-color: var(--accentOrange);
+    width: 80px;
+    height: 80px;
+}
+
+.keypad button.selected, #voteBtn {
+    background-color: var(--accentBlue);
+    color: white;
+}
+
+.keypad button:disabled,
+button:disabled,
+#voteBtn:disabled {
+    background-color: var(--disabledGrey);
+    color: var(--darkGrey);
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+    opacity: 1;
+}
+
+.keypad-btn.discouraged {
+    color: var(--desatOrange);
+    background-color: var(--darkerOrange);
+}
+
+#voteBtn {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 250px;
+    border-radius: 30px;
+}
+
+/* Slider Input Styling */
+#slider-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 330px;
+    font-family: Arial, sans-serif;
+    margin-top: 50px;
+}
+
+.selected-value {
+    margin-left: 125px;
+    background: white;
+    padding: 0;
+    border-radius: 22px;
+    font-weight: normal;
+    color: var(--accentBlue);
+    height: 100px;
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.whole-number {
+    font-size: 55px;
+    line-height: 1;
+    margin-right: -4px;
+}
+
+.tenths {
+    font-size: 33px;
+    line-height: 1;
+    align-self: center;
+    margin-bottom: -14px;
+    color: var(--accentBlue);
+    opacity: 0.7;
+}
+
+.scale-container {
+    position: relative;
+    width: 350px;
+    height: 80px;
+    margin-top: -10px;
+}
+
+.scale-image {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.sliderStyle {
+    position: relative;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.slider {
+    margin-top: 66px;
+    margin-left: -7px;
+    width: 104%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    background: transparent;
+    position: relative;
+    z-index: 2;
+}
+
+
+/* don't combine  the below classes, as it will causes problems */
+.slider::-moz-range-thumb {
+	width: 68px;
+	height: 68px;
+    box-shadow: none;
+	background: url('images/thumb-image.svg') no-repeat center center;
+	background-size: contain;
+	cursor: pointer;
+	border: none;
+	opacity: 1;
+	transition: opacity 0.3s;
+}
+
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 68px;
+	height: 68px;
+    box-shadow: none;
+	background: url('images/thumb-image.svg') no-repeat center center;
+	background-size: contain;
+	cursor: pointer;
+	border: none;
+	opacity: 1;
+	transition: opacity 0.3s;
+}
+
+
+/* Options Row */
+.options-row {
+    width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+
+#inputModeButton, #refreshBtn, #stealthToggleBtn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+#inputModeButton img, #refreshBtn img, #stealthToggleBtn img {
+    width: 46px;
+    height: 46px;
+}

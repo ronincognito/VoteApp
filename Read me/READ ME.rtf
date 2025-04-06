@@ -1,0 +1,62 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww15460\viewh16840\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 cdRunning the vote app on my Synology NAS\
+\
+First SSH into your NAS.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1 \cf0 $ ssh ron@192.168.178.111\
+
+\f0 \
+Check the python version\
+	\
+
+\f1 $ python3 --version
+\f0 \
+\
+Go to the voteapp directory\
+\
+
+\f1 $ cd voteApp
+\f0 \
+\
+Activate the virtual environment\
+\
+
+\f1 $ source venv/bin/activate\
+\
+
+\f0 Start the vote app\
+
+\f1 \
+$ python app.py\
+\
+Or to run it in the background use\
+\
+$ nohup python app.py &\
+\
+To access the 'vote master' page go to [url:port]/admin, the 'foto vote' page is just [url:port]\
+\
+URL is the synology address (192.168.178.111) or the WAN address.\
+Check app.py code to see what port in runs on (should be 8080)\
+When accessing via WAN make sure port forwarding is configured correctly.\
+\
+-----------\
+\
+Note that this is identical on MacOS as on the Synology (except for SSH step and of course the IP address).\
+More details in chatGPT log: {\field{\*\fldinst{HYPERLINK "https://chatgpt.com/c/6bf2033b-7fb1-4e7a-a9e4-25fb1401f2d7"}}{\fldrslt https://chatgpt.com/c/6bf2033b-7fb1-4e7a-a9e4-25fb1401f2d7}}\
+\
+-----------\
+\
+On MacPro, use terminal to cd to the correct directory, then activate the virtual environment and start the app by browsing these urls: {\field{\*\fldinst{HYPERLINK "http://192.168.178.102:8080/"}}{\fldrslt http://192.168.178.102:8080}}, or {\field{\*\fldinst{HYPERLINK "http://192.168.178.102:8080/"}}{\fldrslt http://192.168.178.102:8080}}/admin.\
+\
+-----------\
+\
+Misc\
+suppressing terminal logging feedback wrt /vote_count api calls is done in app.py code (look for 'logging.Filter' or 'werkzeug')}

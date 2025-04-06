@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>STEMRONDE BEHEER</title>
+	<!-- -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> 
+	<!-- -->
+<style>	
+	
+	/* Main Buttons */
+ 	#closeVoteBtn, #openVoteBtn, #confirmDownloadBtn  {
+		padding: 10px 20px;
+		font-size: 18px;
+		width: 240px;
+		margin-top: 15px;
+		padding: 10px 20px;
+		font-size: 18px;
+		width: 240px;
+		margin-top: 15px;
+	}
+	
+	#voteCount {
+		height: 300px;
+		color: var(--disabledUltraGrey);
+		font-size: 255px;
+		font-weight: normal;
+	}
+
+	#openVoteBtn, #confirmDownloadBtn  {
+		background-color: var(--accentBlue);
+	}
+
+	#closeVoteBtn {
+		background-color: var(--accentOrange);
+	}
+
+	/* Vote Chart */
+	#voteChart {
+		width: 100%;
+		margin: 0 auto;
+		padding: 50px;
+	}
+
+	/* button to access to stored results  */
+	#storedResultsBtn {
+		background-color: var(--darkGrey);
+		padding: 10px 20px;
+		font-size: 11px;
+		border-radius: 25px;
+		position: absolute;
+		bottom: 40px;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	/* Overlay Styles */
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.4);
+		z-index: 1000;
+	}
+
+	.overlay-content {
+		position: relative;
+		top: 50%;
+		left: 50%;
+		width: 80%;
+		height: 70%;
+		transform: translate(-50%, -50%);
+		background-color: #fff;
+		padding: 20px;
+		text-align: center;
+		border-radius: 12px;
+	}
+
+	.overlay-content h1 {
+		margin-top: 40px;
+		margin-bottom: 20px;
+		font-size: 24px;
+	}
+
+	.overlay-content h2, .overlay-content p {
+		margin-bottom: 20px;
+	}
+	
+	.overlay-content p {
+		font-size: 12px;
+	}
+
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 11px;
+	}
+	
+	th, td {
+		border: 1px solid black;
+		padding: 5px;
+		text-align: left;
+	}
+	
+	th {
+		background-color: #f2f2f2;
+	}
+	
+	/* Set a fixed width for some columns */
+	th:nth-child(1),
+	td:nth-child(1) {
+		width: 120px; 
+	}
+	
+	th:nth-child(2),
+	td:nth-child(2),
+	th:nth-child(3),
+	td:nth-child(3)  {
+		width: 55px; 
+	}
+
+
+	
+	/* Clear Data Button */
+	#clearDataBtn, #confirmClearDataBtn, #cancelClearDataBtn {
+		padding: 5px 20px;
+		font-size: 11px;
+		border-radius: 25px;
+		background-color: var(--deleteRed);
+	}
+	
+	#clearDataBtn {
+		position: absolute;
+		bottom: 20px;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+	
+	#confirmClearDataBtn {
+		/* */
+	}
+	#cancelClearDataBtn {
+		background-color: var(--accentBlue);
+	}
+
+
+	/* Close Overlay  */
+	#closeOverlayBtn {
+		cursor: pointer;
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		width: 30px;
+		height: 30px;
+		background-image: url('static/images/close.png');
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border: none;
+	}
+
+	#confirmDownloadBtn:disabled, #clearDataBtn:disabled  {
+		background-color: var(--disabledUltraGrey);
+		color: white;
+		cursor: not-allowed;
+	}		
+
+	/* Modal Styles */
+	.modal {
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+		z-index: 2000; /* Make sure it sits on top */
+		display: flex;
+		justify-content: center; /* Center horizontally */
+		align-items: center; /* Center vertically */
+	}
+	
+	.modal-content {
+		position: relative;
+		top: 50%;
+		left: 50%;
+		width: 50%;
+		height: 40%;
+		transform: translate(-50%, -50%);
+		background-color: #fff;
+		padding: 20px;
+		text-align: center;
+		align-items: center;
+		border-radius: 12px;
+	}
+	
+	 /* Flex container for the label and slider */
+    #voteCheckContainer {
+      display: flex;
+      align-items: center; /* Vertically center label and slider */
+      margin-top:30px;
+    }
+
+    /* Label style */
+    #voteCheckLabel {
+      margin-right: 10px; /* Space between label and slider */
+      margin-top: 10px;
+      font-size: 16px;
+    }
+	
+	/* Style the toggle switch */
+	.switch {
+	  position: relative;
+	  display: inline-block;
+	  width: 40px;
+	  height: 22px;
+	}
+	
+	.switch input {
+	  opacity: 0;
+	  width: 0;
+	  height: 0;
+	}
+	
+	.sliderToggle {
+	  position: absolute;
+	  cursor: pointer;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  background-color: #ccc;
+	  transition: 0.4s;
+	  border-radius: 34px;
+	}
+	
+	.sliderToggle:before {
+	  position: absolute;
+	  content: "";
+	  height: 18px;
+	  width: 18px;
+	  border-radius: 50%;
+	  left: 2px;
+	  bottom: 2px;
+	  background-color: white;
+	  transition: 0.4s;
+	}
+	
+	input:checked + .sliderToggle {
+	  background-color: var(--accentBlue);
+	}
+	
+	input:checked + .sliderToggle:before {
+	  transform: translateX(18px);
+	}
+
+</style>
+</head>
+<body>
+<div class="content-container">
+	<h1>STEMRONDE BEHEER</h1>
+	<h2 id="voteStatus"> </h2>
+	<button id="openVoteBtn">OPEN STEMRONDE </button>
+	<button id="closeVoteBtn" style="display:none;">SLUIT STEMRONDE</button> </p>
+	<div id="voteCount"></div>
+	<p id="result"></p>
+	<canvas id="voteChart" width="400" height="200"></canvas>
+	<p><button id="storedResultsBtn">OPGESLAGEN RESULTATEN</button></p>
+	
+	<!-- Toggle to control repeated vote check -->    
+	<div id="voteCheckContainer">
+	  <label for="toggleVoteCheck" id="voteCheckLabel">Stemlimiet</label>
+	  <label class="switch">
+		<input type="checkbox" id="toggleVoteCheck">
+		<span class="sliderToggle"></span>
+	  </label>
+	</div>
+	
+    <div id="downloadOverlay" class="overlay">
+        <div class="overlay-content">
+            <h1>RESULTATEN</h1>
+            <p id="voteCountOverlay"></p>
+            <button id="confirmDownloadBtn">Download Alle Data</button></p>
+            
+             <!-- Table for showing last 20 voting results -->
+			 <div>
+				 <table id="voteResultsTable" >
+					 <thead>
+						 <tr>
+							 <th>Datum|Tijd</th>
+							 <th>Gem.</th>
+							 <th>St.dev.</th>
+							 <th>Stemlijst</th>
+							 <th>Gebruikers</th>
+						 </tr>
+					 </thead>
+					 <tbody>
+						 <!-- Rows will be dynamically inserted here -->
+					 </tbody>
+				 </table>
+			 </div>
+            <button id="clearDataBtn">WIS ALLE DATA</button></p>
+            <button id="closeOverlayBtn"></button></p>
+        </div>
+    </div>
+
+	<!-- Delete Confirmation Modal -->
+	<div id="deleteConfirmModal" class="modal" style='display:none'>
+		<div class="modal-content">
+			<h2>Are you sure you want to clear all data?</h2>
+			<button id="confirmClearDataBtn">Yes, clear data</button>
+			<button id="cancelClearDataBtn">Cancel</button>
+		</div>
+	</div>
+
+	<script>
+	
+		// Get the modal and buttons
+		const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+		const clearDataBtn = document.getElementById('clearDataBtn');
+		const confirmClearDataBtn = document.getElementById('confirmClearDataBtn');
+		const cancelClearDataBtn = document.getElementById('cancelClearDataBtn');
+	    let voteChartInstance = null;
+
+		document.getElementById('toggleVoteCheck').addEventListener('change', function () {
+			fetch('/toggle_vote_check', {method: 'POST'})
+				.then(response => response.json())
+				.then(data => {
+					//document.getElementById('statusMessage').innerText = data.status;
+					document.getElementById('toggleVoteCheck').checked = data.status.includes('enabled');
+				});
+		});		
+		
+		document.getElementById('openVoteBtn').addEventListener('click', function() {
+		    fetch('/open_vote', {method: 'POST'})
+		        .then(response => response.json())
+		        .then(data => {
+		            document.getElementById('voteStatus').innerText = data.status;
+		            document.getElementById('openVoteBtn').style.display = 'none';
+		            document.getElementById('closeVoteBtn').style.display = 'block';
+		            document.getElementById('result').innerText = '';
+		            document.getElementById('storedResultsBtn').style.display = 'none';
+		            document.getElementById('voteCheckContainer').style.display = 'block';
+		            document.getElementById('voteCount').style.display = 'block';
+		            // Hide the chart
+           			document.getElementById('voteChart').style.display = 'none';
+		            updateVoteCount();
+		        });
+		});
+
+		document.getElementById('closeVoteBtn').addEventListener('click', function() {
+			fetch('/close_vote', { method: 'POST' })
+				.then(response => response.json())
+				.then(data => {
+					document.getElementById('voteStatus').innerText = data.status;
+					document.getElementById('openVoteBtn').style.display = 'block';
+					document.getElementById('closeVoteBtn').style.display = 'none';
+					document.getElementById('storedResultsBtn').style.display = 'block';
+					document.getElementById('voteCheckContainer').style.display = 'none';
+					document.getElementById('voteCount').style.display = 'none';
+
+					
+					//console.log('vote length:', data.votes_count.length);
+					if (!data.votes_count || data.votes_count.length === 0) return; // skip if there is no voting data
+           			
+           			 
+					document.getElementById('result').innerText = `Gemiddeld: ${data.avg}, Standaard dev: ${data.sdev}`;
+
+
+					// Ensure data.votes_count is valid
+					const votesCount = data.votes_count || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; 
+					
+					// Destroy existing chart instance if it exists
+					if (voteChartInstance !== null) {
+						voteChartInstance.destroy();
+					}
+					let maxValue = Math.max(...votesCount, 5); // Ensure at least 5, or more if data exceeds it
+					document.getElementById('voteChart').style.display = 'block'; // Show the chart
+		
+					// Create a new chart instance
+					const ctx = document.getElementById('voteChart').getContext('2d');
+					voteChartInstance = new Chart(ctx, {
+						type: 'bar',
+						data: {
+							labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+							datasets: [{
+								data: votesCount,
+								backgroundColor: '#ffffff',
+								borderColor: 'rgba(54, 162, 235, 1)',
+								borderWidth: 0,
+								borderRadius: 30 // Adjust this value to change the roundness of the bar corners
+							}]
+						},
+						options: {
+							plugins: {
+								legend: {
+									display: false // Hides the legend
+								}
+							},
+							scales: {
+								x: {
+									grid: {
+										display: false // Hides vertical gridlines (x-axis)
+									}
+								},
+								y: {
+									display: false, // Hides the entire y-axis (including labels and line)
+									grid: {
+										display: false,
+									},
+									beginAtZero: true,
+									min: 0,          // Set minimum value to 0
+									max: maxValue,   // Set maximum value to at least 5
+									ticks: {
+										stepSize: 1,  // Ensure the y-axis increments by 1
+										callback: function(value) {
+											return Number.isInteger(value) ? value : null; // Show only integers
+										}
+									}
+								}
+							}
+						}
+					});
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		});
+		
+		function updateVoteCount() {
+		    fetch('/vote_count')
+		        .then(response => response.json())
+		        .then(data => {
+		            document.getElementById('voteCount').innerText = `${data.count}`;
+		            if (document.getElementById('closeVoteBtn').style.display === 'block') {
+		                setTimeout(updateVoteCount, 1000);
+		            }
+		        });
+		}
+		
+		// Open the overlay
+		document.getElementById('storedResultsBtn').addEventListener('click', function() {
+			fetch('/stored_vote_count')
+				.then(response => response.json())
+				.then(data => {
+					document.getElementById('voteCountOverlay').innerText = 
+					(data.count != 0) 
+						? 'Er zijn '+ data.count + ' opgeslagen stemrondes' + ((data.count > 10) ? ' - de 10 meest recente worden hieronder getoond.' : '.')
+						: 'Er zijn geen opgeslagen stemrondes';
+					document.getElementById('downloadOverlay').style.display = 'block';
+					document.getElementById('confirmDownloadBtn').disabled = document.getElementById('clearDataBtn').disabled = (data.count == 0);
+					if (data.count == 0) {
+						document.getElementById('voteResultsTable').style.display = 'none';
+					} else {
+						document.getElementById('voteResultsTable').style.display = 'table';
+						updateVoteResultsTable(data.last_10_votes); // Populate the table
+					}
+				});
+		});
+		
+		// Close the overlay
+		document.getElementById('closeOverlayBtn').addEventListener('click', function() {
+			document.getElementById('downloadOverlay').style.display = 'none';
+		});
+		
+		// Download the CSV file
+		document.getElementById('confirmDownloadBtn').addEventListener('click', function() {
+			window.location.href = '/download_csv';
+			document.getElementById('downloadOverlay').style.display = 'none';
+		});
+		
+		// Show the modal when "clearDataBtn" is clicked
+		clearDataBtn.addEventListener('click', function() {
+			deleteConfirmModal.style.display = 'block';
+		});
+		
+		// Hide the modal and do nothing when "cancelClearDataBtn" is clicked
+		cancelClearDataBtn.addEventListener('click', function() {
+			deleteConfirmModal.style.display = 'none';
+		});
+		
+		// Perform the data clearing action when "confirmClearDataBtn" is clicked
+		confirmClearDataBtn.addEventListener('click', function() {
+			// Call your API to clear data here
+			fetch('/clear_votes', { method: 'POST' })
+				.then(response => response.json())
+				.then(data => {
+					// alert('Stemrondes gewist');
+					// console.log('Data cleared:', data);
+					
+					// Hide the modal after clearing and the overlay
+					deleteConfirmModal.style.display = 'none';
+					document.getElementById('downloadOverlay').style.display = 'none';
+				});
+		});
+
+		// Function to update the table
+		function updateVoteResultsTable(results) {
+			const tableBody = document.getElementById('voteResultsTable').querySelector('tbody');
+			tableBody.innerHTML = ''; // Clear existing table data
+				
+			results.forEach(result => {
+				const row = document.createElement('tr');
+				
+				// Create cells for each field
+				const datetimeCell = document.createElement('td');
+				datetimeCell.textContent = result.timestamp;
+				datetimeCell.style.border = '1px solid black';
+		
+				const avgCell = document.createElement('td');
+				avgCell.textContent = result.avg;
+				avgCell.style.border = '1px solid black';
+		
+				const sdevCell = document.createElement('td');
+				sdevCell.textContent = result.sdev;
+				sdevCell.style.border = '1px solid black';
+		
+				const votesCell = document.createElement('td');
+				votesCell.textContent = result.votes.join(', ');
+				votesCell.style.border = '1px solid black';
+				
+				const userCell = document.createElement('td');
+				userCell.textContent = result.users.join(', ');
+				userCell.style.border = '1px solid black';
+		
+		
+				// Append cells to the row
+				row.appendChild(datetimeCell);
+				row.appendChild(avgCell);
+				row.appendChild(sdevCell);
+				row.appendChild(votesCell);
+				row.appendChild(userCell);
+		
+				// Append row to the table body
+				tableBody.appendChild(row);
+			});
+		}
+		
+		
+		document.addEventListener('DOMContentLoaded', function () {
+			document.getElementById('voteCheckContainer').style.display = 'none';			
+			// Now fetch and set the checkbox state
+			fetch('/get_vote_check_status')
+				.then(response => response.json())
+				.then(data => {
+					document.getElementById('toggleVoteCheck').checked = data.status;
+				});
+		});
+
+/*
+		document.addEventListener('DOMContentLoaded', function () {
+		// Fetch voting status first
+		fetch('/voting_status')
+			.then(response => response.json())
+			.then(data => {
+				if (data.voting_open) {
+					document.getElementById('voteCheckContainer').style.display = 'block';
+		console.log('vote is open?', data.voting_open);
+		
+					// Now fetch and set the checkbox state
+					fetch('/get_vote_check_status')
+						.then(response => response.json())
+						.then(data => {
+							document.getElementById('toggleVoteCheck').checked = data.status;
+						});
+				} else {
+					document.getElementById('voteCheckContainer').style.display = 'none';
+				}
+			});
+		});
+
+*/
+
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="68px" height="80px" viewBox="0 0 68 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>scale-thumb-pointy</title>
+    <defs>
+        <filter x="-39.7%" y="-10.5%" width="179.4%" height="152.4%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="6" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.736739579 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <linearGradient x1="50%" y1="32.9984603%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#FDFDFD" offset="0%"></stop>
+            <stop stop-color="#80B6EA" offset="54.7206212%"></stop>
+            <stop stop-color="#1F7FDB" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="97.7996613%" id="linearGradient-3">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#3D90E0" offset="50.8570531%"></stop>
+            <stop stop-color="#013465" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="voteApp" transform="translate(-1261, -1613)">
+            <g id="scale-thumb-pointy" filter="url(#filter-1)" transform="translate(1272, 1613)">
+                <path d="M20.9148857,6.95615698 C22.0779195,6.42252969 23.4445253,6.33258485 24.7390341,6.81280586 C26.1045234,7.31935833 27.1812786,8.39611355 27.6878311,9.76160284 L44.9375948,56.2609659 C45.4178158,57.5554747 45.327871,58.9220805 44.7942437,60.0851143 C44.2606164,61.2481482 43.2833066,62.2076101 41.9887978,62.6878311 C41.4322465,62.8942937 40.8433765,63 40.2497637,63 L5.75023629,63 C4.36952441,63 3.11952441,62.4403559 2.21470238,61.5355339 C1.30988035,60.6307119 0.750236288,59.3807119 0.750236288,58 C0.750236288,57.4063872 0.855942604,56.8175172 1.0624052,56.2609659 L18.3121689,9.76160284 C18.7923899,8.46709403 19.7518518,7.48978428 20.9148857,6.95615698 Z" id="Triangle" stroke="#FFFFFF" stroke-width="2" fill="url(#linearGradient-2)" transform="translate(23, 31) rotate(360) translate(-23, -31)"></path>
+                <rect id="Rectangle" fill="url(#linearGradient-3)" opacity="0.565266927" x="22" y="9" width="2" height="50"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

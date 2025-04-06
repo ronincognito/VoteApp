@@ -1,0 +1,86 @@
+
+:root { /* changed */
+    --bodyText: #222222;
+    --accentBlue: #3C6A96;
+    --hoverBlue: #357ABD;
+    --darkerOrange: #606060;
+    --accentOrange: #777;
+    --desatOrange: #999;
+    --disabledGrey: #222;
+    --disabledUltraGrey: #efefef;
+    --mediumGrey: #aaa;
+    --darkGrey: #444;
+    --deleteRed: #990000;
+}
+
+/* General styles */
+body { /* changed */
+   font-family: Arial, sans-serif;
+   background-color: #000; /* #d3d3d3; */
+   margin: 0;
+   padding: 0;
+   text-align: center;
+   color: var(--bodyText);
+}
+
+h1, h2 { /* changed */
+	color: var(--disabledGrey);
+}
+
+
+.keypad button, #voteBtn { /* changed */
+	padding: 10px;
+	font-size: 18px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;	
+	color: #bbb;
+}
+
+.keypad button:disabled { /* changed */
+	background-color: var(--disabledGrey);
+	color: black;
+}
+
+.keypad button.selected {
+	background-color: #5B7790; /* very dim, almost no contrast with unselected state */
+}
+
+.keypad button.selected, #voteBtn {
+	color: #aaaaaa;
+}
+
+keypad button:disabled, #voteBtn:disabled {  /* changed */
+	background-color: var(--disabledGrey);
+	color: black;
+	cursor: not-allowed;
+}
+
+.keypad button.selected:disabled {
+	background-color: var(--disabledGrey);
+	color: black;
+}
+
+#voteBtn {
+	color: white;
+	border-radius: 30px;
+}
+	
+/* slider input related styling */
+
+.selected-value {  /* changed */
+	background: #999999;
+}
+
+.whole-number { /* changed */
+	/* color: */
+}
+.tenths { /* changed */
+	/* color: */
+}
+
+
+
+/* options row related styling */
+
+

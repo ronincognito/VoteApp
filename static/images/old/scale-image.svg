@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="395px" height="146px" viewBox="0 0 395 146" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>scale-image</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="395" height="146" rx="16"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="voteApp" transform="translate(-1042, -661)">
+            <g id="Group-2-Copy" transform="translate(1025, 257)">
+                <g id="scale-image" transform="translate(17, 404)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Rectangle" fill="#F45E00" xlink:href="#path-1"></use>
+                    <path d="M-7,-9 L123,-9 L123,153.752563 L-7,153.752563 L-7,-9 Z M345,-9 L401,-9 L401,153.752563 L345,153.752563 L345,-9 Z" id="noVoteZone" fill="#C04E07" opacity="0.596765427" mask="url(#mask-2)"></path>
+                    <g id="ticks" mask="url(#mask-2)">
+                        <g transform="translate(16, 17)">
+                            <g id="r10" transform="translate(334, 0)">
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(13, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.15234375" y="22">10</tspan>
+                                </text>
+                            </g>
+                            <g id="r9" transform="translate(303.5, 0)">
+                                <g id="ruler/marker-copy" opacity="0.295747303" transform="translate(24.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="16" rx="1"></rect>
+                                </g>
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(6.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.326171875" y="22">9</tspan>
+                                </text>
+                            </g>
+                            <g id="r8" transform="translate(266.5, 0)">
+                                <g id="ruler/marker-copy" opacity="0.295747303" transform="translate(24.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="16" rx="1"></rect>
+                                </g>
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(6.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.326171875" y="22">8</tspan>
+                                </text>
+                            </g>
+                            <g id="r7" transform="translate(229.5, 0)">
+                                <g id="ruler/marker-copy" opacity="0.295747303" transform="translate(24.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="16" rx="1"></rect>
+                                </g>
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(6.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.326171875" y="22">7</tspan>
+                                </text>
+                            </g>
+                            <g id="r6" transform="translate(192.5, 0)">
+                                <g id="ruler/marker-copy" opacity="0.295747303" transform="translate(24.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="16" rx="1"></rect>
+                                </g>
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(6.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.326171875" y="22">6</tspan>
+                                </text>
+                            </g>
+                            <g id="r5" transform="translate(155.5, 0)">
+                                <g id="ruler/marker-copy" opacity="0.295747303" transform="translate(24.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="16" rx="1"></rect>
+                                </g>
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(6.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.326171875" y="22">5</tspan>
+                                </text>
+                            </g>
+                            <g id="r4" transform="translate(118.5, 0)">
+                                <g id="ruler/marker-copy" opacity="0.295747303" transform="translate(24.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="16" rx="1"></rect>
+                                </g>
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(6.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.326171875" y="22">4</tspan>
+                                </text>
+                            </g>
+                            <g id="r3" transform="translate(81.5, 0)">
+                                <g id="ruler/marker-copy" opacity="0.295747303" transform="translate(24.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="16" rx="1"></rect>
+                                </g>
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(6.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.326171875" y="22">3</tspan>
+                                </text>
+                            </g>
+                            <g id="r2" transform="translate(44.5, 0)">
+                                <g id="ruler/marker-copy" opacity="0.295747303" transform="translate(24.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="16" rx="1"></rect>
+                                </g>
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(6.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.326171875" y="22">2</tspan>
+                                </text>
+                            </g>
+                            <g id="r1" transform="translate(7.5, 0)">
+                                <g id="ruler/marker-copy" opacity="0.295747303" transform="translate(24.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="16" rx="1"></rect>
+                                </g>
+                                <g id="ruler/marker" opacity="0.49903797" transform="translate(6.5, 30)" fill="#FFFFFF">
+                                    <rect id="Rectangle" x="0" y="0" width="2" height="80" rx="1"></rect>
+                                </g>
+                                <text id="10" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+                                    <tspan x="0.326171875" y="22">1</tspan>
+                                </text>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG Button</title>
+  <style>
+    .inputModeButton {
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+    }
+
+    .inputModeButton img {
+      width: 46px;
+      height: 46px;
+    }
+  </style>
+</head>
+<body>
+
+	<button class="inputModeButton" onclick="toggleInputMode()">
+   		<img id="toggleImg" src="images/btn_to_slider.svg" alt="Button Icon">
+  	</button>
+  
+  	<script>
+		function toggleInputMode() {
+		  const img = document.getElementById('toggleImg');
+		  img.src = img.src.includes('btn_to_slider.svg') ? 'images/btn_to_numpad.svg' : 'images/btn_to_slider.svg';
+		} 
+  	</script>
+</body>
+</html>

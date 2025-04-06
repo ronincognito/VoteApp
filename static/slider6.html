@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Slider</title>
+    <style>
+        body, #sliderPad {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            background-color: #d3d3d3;
+            font-family: Arial, sans-serif;
+        }
+        .selected-value {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: normal;
+            color: #1976d2;
+            height: 96px;
+            width: 109px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            visibility: hidden; /* Initially hidden */
+        }
+        .whole-number {
+            font-size: 66px;
+            line-height: 1;
+        }
+        .tenths {
+            font-size: 48px;
+            line-height: 1;
+            align-self: center;
+            margin-bottom: -12px;
+            color: #57A8F6;
+        }
+        
+        .scale-container {
+            position: relative;
+            width: 376px;
+            height: 80px;
+            margin-top: 50px;
+        }
+        
+        .scale-image {
+            width: 100%;
+            height: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .slider-container {
+            position: relative;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .slider {
+            margin-top: 30px;
+            margin-left: -4px;
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: transparent;
+            position: relative;
+            z-index: 2;
+        }
+ 
+       	/* don't combine with the below classes, as it will causes problems */
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 38px;
+            height: 38px;
+            background: url('images/thumb-image.png') no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+            border: none;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.3s;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 38px;
+            height: 38px;
+            background: url('images/thumb-image.png') no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+            border: none;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.3s;
+        }
+        
+		/* don't combine with the below classes, as this will cause problems showing the thumb! */
+		/* More specific class to ensure the thumb is affected */
+		.slider.show-thumb::-webkit-slider-thumb { opacity: 1; }/* Force the thumb to be visible */
+		.slider.show-thumb::-moz-range-thumb { opacity: 1; }
+
+    </style>
+</head>
+<body>
+    <div id="sliderPad">
+		<div class="selected-value" id="valueDisplay">
+			<span class="whole-number">4</span><span class="tenths">.5</span>
+		</div>
+	
+		<div class="scale-container">
+			<img src="images/scale-image.svg" class="scale-image" alt="Slider Scale">
+			<div class="slider-container">
+				<input type="range" min="1" max="10" step="0.5" value="4.5" class="slider" id="slider">
+			</div>
+		</div>
+    </div>
+    
+    <script>
+        const slider = document.getElementById("slider");
+        const valueDisplay = document.getElementById("valueDisplay");
+
+        function showElements() {
+            slider.classList.add("show-thumb");
+            valueDisplay.style.visibility = "visible";
+        }
+
+        function updateValue() {
+            const sliderValueText = slider.value;
+            valueDisplay.innerHTML = `<span class="whole-number">${Math.floor(sliderValueText)}</span><span class="tenths">.${(sliderValueText * 10) % 10}</span>`;
+        }
+
+        // Add event listeners to trigger interaction with slider
+        ["mousedown", "touchstart", "focus"].forEach(event => {
+            slider.addEventListener(event, showElements, { once: true });
+        });
+        
+        slider.addEventListener("input", updateValue);
+        
+    </script>
+</body>
+</html>

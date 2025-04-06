@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Button row</title>
+  <style>
+    
+    .options-row {
+		width: 400px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		margin-top: 50px;
+		background: lightblue;
+	}
+	
+	#inputModeButton {
+	  background: transparent;
+	  border: none;
+	  padding: 0;
+	  cursor: pointer;
+	  /*display: inline-flex;
+	  /*margin: 0 auto; /* Centers ABS2 horizontally */
+	}
+	
+	#inputModeButton img {
+	  width: 46px;
+	  height: 46 px;
+	}
+	
+	#refreshBtn {
+		padding: 10px;
+		font-size: 18px;
+		cursor: pointer;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		background-color: darkblue;
+		font-size: 11px;
+		border-radius: 25px;
+		padding: 10px 20px;
+		margin: 0 auto
+	}
+
+  </style>
+</head>
+<body>
+  	
+  	<div class="options-row">
+		  <button id="inputModeButton"onclick="toggleInputMode()">
+		  	<img id="inputModeImg" src="images/btn_to_slider.svg" alt="switch input mode">
+		  </button>
+		  <button id="refreshBtn">SCHERM VERVERSEN</button>
+	</div>
+  
+  	<script>
+		function toggleInputMode() {
+		  const img = document.getElementById('inputModeImg');
+		  img.src = img.src.includes('btn_to_slider.svg') ? 'images/btn_to_numpad.svg' : 'images/btn_to_slider.svg';
+		} 
+  	</script>
+</body>
+</html>

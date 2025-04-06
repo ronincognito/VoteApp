@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="apple-touch-icon" href="static/images/apple-touch-icon.png">
+<link rel="icon" href="static/images/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="static/images/favicon-192x192.png">
+<head> 
+	<meta charset="UTF-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+	<title> Stem pagina </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link id="stealth-style" rel="stylesheet" href="{{ url_for('static', filename='stealth.css') }}">
+</head>
+<body>
+<div class="content-container">
+	<h1>FOTO BEOORDELEN</h1> 
+	<p id="voteStatus" class="message">Selecteer je score.<br></p>
+	{% if voting_open %} 
+	   
+		<div id="keypad-container" class="keypad-container">
+		   <div class="keypad">
+		   <!-- Keypad buttons in the desired layout -->
+			   <button class="keypad-btn discouraged" data-value="1"> 1 </button>
+			   <button class="keypad-btn discouraged" data-value="2"> 2 </button>
+			   <button class="keypad-btn discouraged" data-value="3"> 3 </button>
+			   <button class="keypad-btn" data-value="4"> 4 </button>
+			   <button class="keypad-btn" data-value="5"> 5 </button>
+			   <button class="keypad-btn" data-value="6"> 6 </button>
+			   <button class="keypad-btn" data-value="7"> 7 </button>
+			   <button class="keypad-btn" data-value="8"> 8 </button>
+			   <button class="keypad-btn" data-value="9"> 9 </button>
+			   <!-- Center the last button in the last row -->
+			   <button class="keypad-btn discouraged" data-value="10" style="grid-column: 2;"> 10 </button>
+		   </div>
+	    </div>
+	   
+	 	<div id="slider-container" style="display: none;">
+	 		<div id="valueDisplayContainer">
+				<div class="selected-value" id="valueDisplay">
+					<span class="whole-number"> </span><span class="tenths"> </span>
+				</div>
+				<img id='arrowDown' src="static/images/arrowDown.svg">
+			</div>
+			<div class="scale-container">
+				<img src="static/images/scale-image.svg" class="scale-image" alt="Slider Scale">
+				<div class="sliderStyle">
+					<input type="range" min="1" max="10" step="0.5" value="4.5" class="slider" id="slider">
+				</div>
+			</div>
+		</div>
+	   
+	   <button id="voteBtn" disabled>BEVESTIG CIJFER </button>
+	   
+	{% else %} 
+		<!-- don't show number selector just fill the space  -->
+		<div style="height: 451px"></div> 
+		
+	{% endif %}
+	
+	<!-- div along bottom that holds some options -->
+	<div class="options-row">
+		  <button id="inputModeButton" onclick="toggleInputMode()">
+		  	<img id="inputModeImg" src="static/images/btn_to_slider.svg" alt="switch input mode">
+		  </button>		  <!-- <button id="refreshBtn">SCHERM VERVERSEN</button> -->
+		  <button id="stealthToggleBtn" onclick="toggleStealthMode()">
+		  	<img id="stealthBtnImg" src="static/images/btn_stealth_ON.svg" alt="switch stealth mode">
+		  </button>
+		  <button id="refreshBtn">
+		  	<img id="refreshBtnImg" src="static/images/btn_refresh.svg" alt="refresh screen">
+		  </button>
+
+	</div>
+	<p>
+</div>
+
+<script>
+	let selectedValue = null;
+	let voteSubmitted = false; // Flag to track if the vote has been submitted
+	let reloadCount = 0;
+	let userId  = '1234';
+	let numpadInputMode = localStorage.getItem("numpadInputMode") !== "false"; // will return false if null or false
+	let stealthMode = (localStorage.getItem("stealthMode") !== "false");
+
+	const voteMessages = {  // Define messages for each vote value 
+   		"1": "Een score lager dan 4 wordt afgeraden.",
+   		"2": "Een score lager dan 4 wordt afgeraden.",
+   		"3": "Een score lager dan 4 wordt afgeraden.",
+    	"4": "Slecht, niet goed genoeg om mee te brengen.",
+    	"5": "Matig, fototechnisch of creatief niet voldoende.",
+    	"6": "Redelijk, maar veel verbeterpunten.",
+    	"7": "Ruim voldoende, wel enkele verbeterpunten.",
+    	"8": "Goed, gewoon een erg sterke foto.",
+    	"9": "Zeer goed, kan bijna niet beter.",
+    	"10": "Uitstekend, kan niet beter, absolute prijswinnaar."
+	};
+	
+	setStealthMode(stealthMode); // make sure we start in the correct mode
+	
+	
+	{% if voting_open %}
+		document.getElementById('voteBtn').addEventListener('click', function() {
+			if (selectedValue && !voteSubmitted) {
+				//console.log("/vote");
+				fetch('/vote', {
+					method: 'POST',
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+					body: `vote_value=${selectedValue}&user_id=${userId}`
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.error) {
+						document.getElementById('voteStatus').innerText = data.error;
+						document.getElementById('voteStatus').classList.add('important');
+					} else {
+						document.getElementById('voteStatus').innerText = data.status;
+						document.getElementById('voteStatus').classList.add('regular');
+					}
+					
+					document.getElementById('voteBtn').disabled = true; // Disable submit button
+					voteSubmitted = true; // Mark vote as submitted
+	
+					// Disable all keypad buttons and grey them out
+					document.querySelectorAll('.keypad-btn').forEach(button => {
+						button.disabled = true;
+					});
+					// Disable and dim the entire slider control, 
+					document.getElementById("slider-container").style.opacity = 0.2;
+					selectedValue = null;
+					// reset slider value so vote stays anonymous
+					slider.value = 5.5; // default
+					slider.disabled = true;
+					valueDisplay.innerHTML = "";
+				});
+			}
+		});
+	{% else %} 
+		// when voting is not open, no need to show the input mode button yet
+		document.getElementById("inputModeButton").style.visibility = "hidden";
+	{% endif %}
+
+	// stylysheet handling -----------------------------------------------------------
+	
+
+	// Keypad handling ---------------------------------------------------------------
+	document.querySelectorAll('.keypad-btn').forEach(button => {
+	    button.addEventListener('click', function() {
+	        if (!voteSubmitted) {  // Only allow selection if vote hasn't been submitted
+	          
+	          	updateNumpadState(this);
+	
+	            selectedValue = this.getAttribute('data-value');
+	            updateMessage(); // provide feedback on the selected value
+            	
+	        }
+	    });
+	});
+	
+	function updateNumpadState(selectedButton) {
+		// Remove 'selected' state from all buttons
+		document.querySelectorAll('.keypad-btn').forEach(btn => {
+			btn.classList.remove('selected');
+		});
+		// show 'selected' state for the clicked button
+	    selectedButton.classList.add('selected');
+	};
+	
+	// Get the button corresponding to `val` and update state
+	function updateNumpadStateByValue(val) {
+		if (!Number.isInteger(val) || val < 1 || val > 10) return;
+		const selectedButton = document.querySelector(`.keypad-btn[data-value="${val}"]`);
+		updateNumpadState(selectedButton);
+	}
+
+	// Handle server-sent events to check voting status --------------------------------
+	const eventSource = new EventSource('/events');
+	let lastVotingState = true;
+	let firstTime = true;
+
+	eventSource.onmessage = function(event) {
+		const votingStatus = (event.data.toLowerCase() === 'true');
+		if (votingStatus !== lastVotingState) {
+			if (! firstTime) {
+				location.reload();  // Reload when the voting state has changed
+			}
+		}
+		firstTime = false;
+		lastVotingState = votingStatus;
+		if (!votingStatus) {
+			document.getElementById('voteStatus').innerHTML = "Je kunt nog niet stemmen.<br> Probeer het later."
+		}
+	};
+        
+    // check user ID once page has loaded ----------------------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+		userId = localStorage.getItem('user_id');
+		if (!userId) {
+			if (crypto.randomUUID) {
+				userId = crypto.randomUUID();
+			} else {
+				// Fallback to a custom UUID generator if randomUUID is not available
+				userId = generateUUID();
+			}
+			localStorage.setItem('user_id', userId);
+		}
+		if (!numpadInputMode) {
+			numpadInputMode = !numpadInputMode;
+			toggleInputMode();
+		}
+	});
+
+	function generateUUID() {
+	  // Simple UUID generation fallback
+	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		  var r = Math.random() * 16 | 0,
+			  v = c === 'x' ? r : (r & 0x3 | 0x8);
+		  return v.toString(16);
+	  });
+	}
+	
+	// slider related code ----------------------------------------------------
+	const slider = document.getElementById("slider");
+	const valueDisplay = document.getElementById("valueDisplay");
+	const valueDisplayContainer = document.getElementById("valueDisplayContainer");
+	
+	function updateSliderValue() {
+		const sliderValueText = slider.value;
+		selectedValue = parseFloat(sliderValueText);
+		valueDisplayContainer.style.opacity = "1";
+		updateMessage();
+	}
+
+	function updateMessage() {
+		//console.log("updateMessage");
+		const message = voteMessages[Math.floor(selectedValue)] || "";
+		document.getElementById('voteStatus').innerHTML = `${message}`;
+		document.getElementById('voteStatus').classList.add('regular');
+		document.getElementById('voteBtn').disabled = false;
+		valueDisplay.innerHTML = `<span class="whole-number">${Math.floor(selectedValue)}</span><span class="tenths">.${(selectedValue * 10) % 10}</span>`;		
+	}	
+	
+	valueDisplayContainer.style.opacity = "0.2";
+	slider.addEventListener("input", updateSliderValue);
+        
+	// option row buttons ----------------------------------------------------
+	
+	// button that toggle between keypad and slider
+	function toggleInputMode() {
+		const keypadContainer = document.getElementById("keypad-container");
+    	const sliderContainer = document.getElementById("slider-container");
+    	if (numpadInputMode) {
+			keypadContainer.style.display = "none";
+			sliderContainer.style.display = "block";
+			slider.value = selectedValue;
+			valueDisplay.innerHTML = `<span class="whole-number">${Math.floor(selectedValue)}</span><span class="tenths">.${(selectedValue * 10) % 10}</span>`;		
+		} else {
+			keypadContainer.style.display = "block";
+			sliderContainer.style.display = "none";
+			selectedValue= Math.floor(selectedValue);
+			updateNumpadStateByValue(selectedValue);
+		}
+		numpadInputMode = !numpadInputMode;
+		localStorage.setItem("numpadInputMode", numpadInputMode);
+		
+		// Update the button icon based on the current mode
+		const img = document.getElementById('inputModeImg');
+		img.src = ! numpadInputMode ? 'static/images/btn_to_numpad.svg' : 'static/images/btn_to_slider.svg';
+	} 
+	
+	// button that toggles between colorfull and spy mode
+	function toggleStealthMode() {
+		setStealthMode(! stealthMode);
+	}
+	
+	function setStealthMode(mode) {
+		stealthMode = mode;
+		document.getElementById("stealth-style").setAttribute("href", ! stealthMode ? "{{ url_for('static', filename='stealth.css') }}" : "");
+		document.getElementById('stealthBtnImg').src = stealthMode ? 'static/images/btn_stealth_ON.svg' : 'static/images/btn_stealth_OFF.svg';
+		var temp = document.querySelector(".scale-image");
+		if (temp !== null) {
+			document.querySelector(".scale-image").src = stealthMode ? "static/images/scale-image.svg" : "static/images/scale-image-stealth.svg";
+			document.getElementById('arrowDown').src = stealthMode ? 'static/images/arrowDown.svg' : 'static/images/arrowDown-stealth.svg';
+		}
+		localStorage.setItem("stealthMode", stealthMode);
+	}
+	
+	// button that reloads the page
+	document.getElementById('refreshBtn').addEventListener('click', function() {
+	    location.reload(); 
+	});
+
+
+</script> </body> </html> 
