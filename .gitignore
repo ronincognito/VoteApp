@@ -3,5 +3,3 @@ venv/
 .sync.ffs_db
 __pycache__/
 temp/
-voting.db
-.env.local
