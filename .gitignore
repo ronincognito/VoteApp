@@ -7,6 +7,6 @@ __pycache__/
 nohup.out
 data/
 
-# contain the club's live address (QR code); kept local only
+# local design files, not published
 Design/voteApp.sketch
 Design/Stem instructie.jpg
