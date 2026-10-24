@@ -33,7 +33,16 @@ Admin page: round open with the live vote count, round closed with the results, 
 
 ## Technology
 
-Built with Python and Flask, with plain HTML, CSS and JavaScript pages. Runs on a Synology NAS behind its HTTPS reverse proxy (the app itself listens on port 8080). See `Instructions/` for setup, starting, stopping and updating.
+Built with Python and Flask, with plain HTML, CSS and JavaScript pages. The app itself listens on port 8080.
+
+## Installation
+
+This repo is meant for two kinds of installation:
+
+- **Synology NAS** (for club evenings): the app runs on the NAS behind DSM's HTTPS reverse proxy, so members can reach it from anywhere. See [Running the vote app on a Synology NAS](Instructions/Running%20App.py%20on%20Synology.md). A section near the end explains what to use instead on other NAS brands or Linux systems.
+- **Mac** (for testing): runs the app on the home network, with its own test data. See [Running the vote app on a Mac](Instructions/Running%20App.py%20on%20macOS.md).
+
+Both guides cover first-time setup, starting, stopping, updating and the admin code.
 
 ## Licence
 
