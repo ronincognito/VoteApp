@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head> 
+	<meta charset="UTF-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+	<link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" sizes="any">
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-192x192.png') }}">
+	<title>FGW Stemmen</title>
+	<meta name="apple-mobile-web-app-title" content="FGW Stemmen"> <!-- name under the home screen icon on iOS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link id="stealth-style" rel="stylesheet" href="{{ url_for('static', filename='stealth.css') }}">
+</head>
+<body>
+<div class="content-container">
+	<h1>FOTO BEOORDELEN</h1> 
+	<p id="voteStatus" class="message">Selecteer je score<br></p>
+	{% if voting_open %} 
+	   
+		<div id="keypad-container" class="keypad-container">
+		   <div class="keypad">
+		   <!-- Keypad buttons in the desired layout -->
+			   <button class="keypad-btn discouraged" data-value="1" disabled> 1 </button>
+			   <button class="keypad-btn discouraged" data-value="2" disabled> 2 </button>
+			   <button class="keypad-btn discouraged" data-value="3" disabled> 3 </button>
+			   <button class="keypad-btn" data-value="4" disabled> 4 </button>
+			   <button class="keypad-btn" data-value="5" disabled> 5 </button>
+			   <button class="keypad-btn" data-value="6" disabled> 6 </button>
+			   <button class="keypad-btn" data-value="7" disabled> 7 </button>
+			   <button class="keypad-btn" data-value="8" disabled> 8 </button>
+			   <button class="keypad-btn" data-value="9" disabled> 9 </button>
+			   <!-- Center the last button in the last row -->
+			   <button class="keypad-btn discouraged" data-value="10" disabled style="grid-column: 2;"> 10 </button>
+		   </div>
+		   <img class="check-ok" src="static/images/check_OK_light.svg" alt="Stem ontvangen">
+	    </div>
+	   
+	 	<div id="slider-container" class="dimmed" style="display: none;">
+	 		<div id="valueDisplayContainer">
+				<div class="selected-value" id="valueDisplay">
+					<span class="whole-number"> </span><span class="tenths"> </span>
+				</div>
+				<img id='arrowDown' src="static/images/arrowDown.svg">
+			</div>
+			<div class="scale-container">
+				<img src="static/images/scale-image.svg" class="scale-image" alt="Slider Scale">
+				<div class="sliderStyle">
+					<input type="range" min="1" max="10" step="0.5" value="5.5" class="slider" id="slider" disabled>
+				</div>
+			</div>
+			<img class="check-ok" src="static/images/check_OK_light.svg" alt="Stem ontvangen">
+		</div>
+	   
+	   <button id="voteBtn" disabled>BEVESTIG CIJFER </button>
+	   
+	{% else %} 
+		<!-- don't show number selector just fill the space  -->
+		<div style="height: 451px"></div> 
+		
+	{% endif %}
+	
+	<!-- div along bottom that holds some options -->
+	<div class="options-row">
+		  <button id="inputModeButton" onclick="toggleInputMode()">
+		  	<img id="inputModeImg" src="static/images/btn_to_slider.svg" alt="switch input mode">
+		  </button>		  <!-- <button id="refreshBtn">SCHERM VERVERSEN</button> -->
+		  <button id="stealthToggleBtn" onclick="toggleDarkMode()">
+		  	<img id="stealthBtnImg" src="static/images/btn_mode_toggle.svg" alt="switch light/dark mode">
+		  </button>
+		  <button id="refreshBtn">
+		  	<img id="refreshBtnImg" src="static/images/btn_refresh.svg" alt="refresh screen">
+		  </button>
+
+	</div>
+	<p>
+</div>
+
+<script>
+	let selectedValue = null;
+	let voteSubmitted = false; // Flag to track if the vote has been submitted
+	let reloadCount = 0;
+	let userId  = '1234';
+	let numpadInputMode = localStorage.getItem("numpadInputMode") !== "false"; // will return false if null or false
+	// dark ('stealth') mode; phones that still have the old, inverted "stealthMode" setting ("false" = dark) keep their choice
+	const savedDarkMode = localStorage.getItem("darkMode");
+	let darkMode = (savedDarkMode !== null) ? (savedDarkMode === "true") : (localStorage.getItem("stealthMode") === "false");
+
+	const voteMessages = {  // Define messages for each vote value 
+   		"1": "Een score lager dan 4 wordt afgeraden",
+   		"2": "Een score lager dan 4 wordt afgeraden",
+   		"3": "Een score lager dan 4 wordt afgeraden",
+    	"4": "Slecht, niet goed genoeg om mee te brengen",
+    	"5": "Matig, fototechnisch of creatief niet voldoende",
+    	"6": "Redelijk, maar veel verbeterpunten",
+    	"7": "Ruim voldoende,<br>wel enkele verbeterpunten",
+    	"8": "Goed, gewoon een erg sterke foto",
+    	"9": "Zeer goed, kan bijna niet beter",
+    	"10": "Uitstekend, kan niet beter,<br>absolute prijswinnaar"
+	};
+	
+	setDarkMode(darkMode); // make sure we start in the correct mode
+	
+	
+	{% if voting_open %}
+		document.getElementById('voteBtn').addEventListener('click', function() {
+			if (selectedValue && !voteSubmitted) {
+				//console.log("/vote");
+				fetch('/vote', {
+					method: 'POST',
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+					body: `vote_value=${selectedValue}&user_id=${userId}`
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.error) {
+						document.getElementById('voteStatus').innerText = data.error;
+						document.getElementById('voteStatus').classList.add('important');
+					} else {
+						document.getElementById('voteStatus').innerText = data.status;
+						document.getElementById('voteStatus').classList.add('regular');
+					}
+					
+					lockVoteInput(!data.error); // check icon only when the vote was accepted
+				});
+			}
+		});
+
+		// grey out keypad/slider and submit button, used after submitting and when the user already voted this round
+		function lockVoteInput(showCheck) {
+			document.getElementById('voteBtn').disabled = true; // Disable submit button
+			document.getElementById('voteBtn').style.visibility = 'hidden'; // and hide it, makes clear the vote was received (keeps its space so the layout doesn't jump)
+			if (showCheck) document.body.classList.add('vote-received'); // shows the check icon over the keypad/slider (see .check-ok in styles.css)
+			voteSubmitted = true; // Mark vote as submitted
+
+			// Disable all keypad buttons and grey them out
+			document.querySelectorAll('.keypad-btn').forEach(button => {
+				button.disabled = true;
+			});
+			// Disable and dim the entire slider control,
+			document.getElementById("slider-container").classList.add("dimmed");
+			valueDisplayContainer.style.opacity = ""; // drop the inline opacity set while sliding, so the 'dimmed' rule applies to the balloon too
+			selectedValue = null;
+			// reset slider value so vote stays anonymous
+			slider.value = 5.5; // default
+			slider.disabled = true;
+			valueDisplay.innerHTML = "";
+		}
+
+		// enable keypad/slider; they are rendered disabled so they don't flash active before checkAlreadyVoted() has an answer
+		function unlockVoteInput() {
+			document.querySelectorAll('.keypad-btn').forEach(button => {
+				button.disabled = false;
+			});
+			document.getElementById("slider-container").classList.remove("dimmed");
+			slider.disabled = false;
+		}
+
+		// after a page refresh: if this user already voted this round (and the vote limit is on), show that right away
+		function checkAlreadyVoted() {
+			fetch(`/has_voted?user_id=${encodeURIComponent(userId)}`)
+			.then(response => response.json())
+			.then(data => {
+				if (data.has_voted) {
+					document.getElementById('voteStatus').innerText = 'Je hebt al gestemd';
+					document.getElementById('voteStatus').classList.add('important');
+					lockVoteInput(false); // only the warning, no check icon
+				} else {
+					unlockVoteInput();
+				}
+			})
+			.catch(() => unlockVoteInput()); // check failed: let the user vote, the server still rejects a double vote
+		}
+	{% else %}
+		// when voting is not open, no need to show the input mode button yet
+		document.getElementById("inputModeButton").style.visibility = "hidden";
+	{% endif %}
+
+	// stylysheet handling -----------------------------------------------------------
+	
+
+	// Keypad handling ---------------------------------------------------------------
+	document.querySelectorAll('.keypad-btn').forEach(button => {
+	    button.addEventListener('click', function() {
+	        if (!voteSubmitted) {  // Only allow selection if vote hasn't been submitted
+	          
+	          	updateNumpadState(this);
+	
+	            selectedValue = this.getAttribute('data-value');
+	            updateMessage(); // provide feedback on the selected value
+            	
+	        }
+	    });
+	});
+	
+	function updateNumpadState(selectedButton) {
+		// Remove 'selected' state from all buttons
+		document.querySelectorAll('.keypad-btn').forEach(btn => {
+			btn.classList.remove('selected');
+		});
+		// show 'selected' state for the clicked button
+	    selectedButton.classList.add('selected');
+	};
+	
+	// Get the button corresponding to `val` and update state
+	function updateNumpadStateByValue(val) {
+		if (!Number.isInteger(val) || val < 1 || val > 10) return;
+		const selectedButton = document.querySelector(`.keypad-btn[data-value="${val}"]`);
+		updateNumpadState(selectedButton);
+	}
+
+	// Handle server-sent events to check voting status --------------------------------
+	const pageVotingState = {{ 'true' if voting_open else 'false' }};  // state this page was rendered with
+	let eventSource = null;
+	let lastHeard = Date.now();  // last time anything arrived on the event stream
+	let reloading = false;
+
+	if (!pageVotingState) {
+		document.getElementById('voteStatus').innerHTML = "Je kunt nog niet stemmen<br>Probeer het later"
+	}
+
+	function handleVotingState(votingStatus) {
+		if (votingStatus !== pageVotingState && !reloading) {
+			reloading = true;
+			location.reload();  // Reload when the voting state has changed
+		}
+	}
+
+	function connectEvents() {
+		if (eventSource) eventSource.close();
+		lastHeard = Date.now();
+		eventSource = new EventSource('/events');
+		eventSource.onopen = function() { lastHeard = Date.now(); };
+		eventSource.onmessage = function(event) {
+			lastHeard = Date.now();
+			handleVotingState(event.data.toLowerCase() === 'true');
+		};
+		eventSource.addEventListener('ping', function() { lastHeard = Date.now(); });  // server sends a ping every 10 s
+	}
+	connectEvents();
+
+	// watchdog: a connection that silently died (common on mobile data) sends no pings, so open a fresh one
+	setInterval(function() {
+		if (Date.now() - lastHeard > 25000) connectEvents();
+	}, 5000);
+
+	// phones drop the connection while the screen is off or Safari is in the background,
+	// so ask for the current state directly when the page becomes visible again
+	function checkVotingStateNow() {
+		fetch('/voting_status', { cache: 'no-store' })
+			.then(response => response.json())
+			.then(data => handleVotingState(data.voting_open))
+			.catch(() => {});  // the event stream will catch up
+		if (Date.now() - lastHeard > 12000) connectEvents();
+	}
+	document.addEventListener('visibilitychange', function() {
+		if (document.visibilityState === 'visible') checkVotingStateNow();
+	});
+	window.addEventListener('pageshow', function(event) {
+		if (event.persisted) checkVotingStateNow();  // page restored from the back/forward cache
+	});
+        
+    // check user ID once page has loaded ----------------------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+		userId = localStorage.getItem('user_id');
+		if (!userId) {
+			if (crypto.randomUUID) {
+				userId = crypto.randomUUID();
+			} else {
+				// Fallback to a custom UUID generator if randomUUID is not available
+				userId = generateUUID();
+			}
+			localStorage.setItem('user_id', userId);
+		}
+		if (!numpadInputMode) {
+			numpadInputMode = !numpadInputMode;
+			toggleInputMode();
+		}
+		{% if voting_open %}
+			checkAlreadyVoted();
+		{% endif %}
+	});
+
+	function generateUUID() {
+	  // Simple UUID generation fallback
+	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		  var r = Math.random() * 16 | 0,
+			  v = c === 'x' ? r : (r & 0x3 | 0x8);
+		  return v.toString(16);
+	  });
+	}
+	
+	// slider related code ----------------------------------------------------
+	const slider = document.getElementById("slider");
+	const valueDisplay = document.getElementById("valueDisplay");
+	const valueDisplayContainer = document.getElementById("valueDisplayContainer");
+	
+	function updateSliderValue() {
+		const sliderValueText = slider.value;
+		selectedValue = parseFloat(sliderValueText);
+		valueDisplayContainer.style.opacity = "1";
+		updateMessage();
+	}
+
+	function updateMessage() {
+		//console.log("updateMessage");
+		const message = voteMessages[Math.floor(selectedValue)] || "";
+		document.getElementById('voteStatus').innerHTML = `${message}`;
+		document.getElementById('voteStatus').classList.add('regular');
+		document.getElementById('voteBtn').disabled = false;
+		valueDisplay.innerHTML = `<span class="whole-number">${Math.floor(selectedValue)}</span><span class="tenths">.${(selectedValue * 10) % 10}</span>`;		
+	}	
+	
+	valueDisplayContainer.style.opacity = "0.2";
+	slider.addEventListener("input", updateSliderValue);
+        
+	// option row buttons ----------------------------------------------------
+	
+	// button that toggle between keypad and slider
+	function toggleInputMode() {
+		const keypadContainer = document.getElementById("keypad-container");
+    	const sliderContainer = document.getElementById("slider-container");
+    	if (numpadInputMode) {
+			keypadContainer.style.display = "none";
+			sliderContainer.style.display = "block"; // the slider layout (e.g. the balloon's margin) is built for block, not the stylesheet's flex
+			if (selectedValue) {
+				slider.value = selectedValue;
+				valueDisplay.innerHTML = `<span class="whole-number">${Math.floor(selectedValue)}</span><span class="tenths">.${(selectedValue * 10) % 10}</span>`;
+			} else {
+				valueDisplay.innerHTML = ""; // nothing selected yet: empty balloon
+			}
+		} else {
+			keypadContainer.style.display = ""; // back to the stylesheet's display (flex), which keeps the keypad centered
+			sliderContainer.style.display = "none";
+			if (selectedValue) {
+				selectedValue = Math.floor(selectedValue);
+				updateNumpadStateByValue(selectedValue);
+			}
+		}
+		numpadInputMode = !numpadInputMode;
+		localStorage.setItem("numpadInputMode", numpadInputMode);
+		
+		updateOptionButtons();
+	} 
+	
+	// button that toggles between light and dark ('stealth') mode
+	function toggleDarkMode() {
+		setDarkMode(! darkMode);
+	}
+	
+	function setDarkMode(mode) {
+		darkMode = mode;
+		document.getElementById("stealth-style").setAttribute("href", darkMode ? "{{ url_for('static', filename='stealth.css') }}" : "");
+		updateOptionButtons();
+		var temp = document.querySelector(".scale-image");
+		if (temp !== null) {
+			document.querySelector(".scale-image").src = darkMode ? "static/images/scale-image-stealth.svg" : "static/images/scale-image.svg";
+			document.getElementById('arrowDown').src = darkMode ? 'static/images/arrowDown-stealth.svg' : 'static/images/arrowDown.svg';
+		}
+		document.querySelectorAll('.check-ok').forEach(img => {
+			img.src = darkMode ? 'static/images/check_OK_dark.svg' : 'static/images/check_OK_light.svg';
+		});
+		localStorage.setItem("darkMode", darkMode);
+		localStorage.removeItem("stealthMode"); // old, inverted setting, converted above
+	}
+	
+	// icons of the option row buttons: '_stealth' versions in dark mode; the input mode button shows the mode it switches to
+	function updateOptionButtons() {
+		const suffix = darkMode ? '_stealth' : '';
+		document.getElementById('inputModeImg').src = `static/images/${numpadInputMode ? 'btn_to_slider' : 'btn_to_numpad'}${suffix}.svg`;
+		document.getElementById('stealthBtnImg').src = `static/images/btn_mode_toggle${suffix}.svg`;
+		document.getElementById('refreshBtnImg').src = `static/images/btn_refresh${suffix}.svg`;
+	}
+
+	// button that reloads the page
+	document.getElementById('refreshBtn').addEventListener('click', function() {
+	    location.reload(); 
+	});
+
+
+</script> </body> </html> 

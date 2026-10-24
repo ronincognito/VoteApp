@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="66px" height="66px" viewBox="0 0 66 66" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>thumb-image</title>
+    <defs>
+        <filter x="-57.9%" y="-42.1%" width="215.8%" height="215.8%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="6" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.736739579 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="slider-concept-copy-4" transform="translate(-128, -448)">
+            <g id="thumb-image" filter="url(#filter-1)" transform="translate(142, 456)">
+                <circle id="Oval" stroke="#FFFFFF" stroke-width="4" fill="#1F7FDB" cx="19" cy="19" r="21"></circle>
+                <rect id="Rectangle" fill="#FFFFFF" opacity="0.565266927" x="18" y="3" width="2" height="32"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/admin/apple-touch-icon.png') }}">
+	<link rel="icon" href="{{ url_for('static', filename='images/admin/favicon.ico') }}" sizes="any">
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/admin/favicon-192x192.png') }}">
+	<title>FGW Beheer</title>
+	<meta name="apple-mobile-web-app-title" content="FGW Beheer"> <!-- name under the home screen icon on iOS -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<style>
+
+	#loginForm {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-top: 30px;
+	}
+
+	#code {
+		width: 240px;
+		box-sizing: border-box;
+		padding: 10px;
+		font-size: 24px;
+		letter-spacing: 8px;
+		text-align: center;
+		border: none;
+		border-radius: 5px;
+	}
+
+	#loginBtn {
+		padding: 10px 20px;
+		font-size: 18px;
+		width: 240px;
+		margin-top: 15px;
+		background-color: var(--accentBlue);
+	}
+
+</style>
+</head>
+<body>
+<div class="content-container">
+	<h1>STEMRONDE BEHEER</h1>
+	{% if error %}
+		<p class="message important">{{ error }}</p>
+	{% else %}
+		<p class="message">Voer de beheercode in</p>
+	{% endif %}
+	<form id="loginForm" method="post" action="{{ url_for('admin_login') }}">
+		<input id="code" name="code" type="password" inputmode="numeric" autocomplete="current-password" autofocus required>
+		<button id="loginBtn" type="submit">INLOGGEN</button>
+	</form>
+</div>
+</body>
+</html>

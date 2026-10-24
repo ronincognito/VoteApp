@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="30px" viewBox="0 0 26 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>arrowDown</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="slider-concept-copy-4" transform="translate(-206, -365)" fill="#FFFFFF">
+            <g id="scale-image" transform="translate(17, 365)">
+                <polyline id="arrowDown" transform="translate(202, 15) scale(1, -1) translate(-202, -15)" points="189 30 202 0 215 30"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

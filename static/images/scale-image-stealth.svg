@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="395px" height="146px" viewBox="0 0 395 146" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>scale-image-stealth</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="395" height="146" rx="73"></rect>
+        <rect id="path-3" x="6" y="6" width="383" height="135" rx="67.5"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-10-Copy" transform="translate(-17, -404)">
+            <g id="scale-image-stealth" transform="translate(17, 404)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Rectangle" fill="#565656" xlink:href="#path-1"></use>
+                <mask id="mask-4" fill="white">
+                    <use xlink:href="#path-3"></use>
+                </mask>
+                <use id="Rectangle" fill="#565656" xlink:href="#path-3"></use>
+                <g id="Group-13" mask="url(#mask-4)">
+                    <g transform="translate(16, -7)" id="scale-image">
+                        <g id="r10" opacity="0.400000006" transform="translate(337.5, 80.5) scale(-1, 1) translate(-337.5, -80.5)translate(328, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="r9" transform="translate(310, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)" fill-opacity="0">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)" fill-opacity="0">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="r8" transform="translate(273, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="r7" transform="translate(236, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="r6" transform="translate(199, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="r5" transform="translate(162, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="r4" transform="translate(125, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="r3" opacity="0.400000006" transform="translate(88, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="r2" opacity="0.400000006" transform="translate(51, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="r1" opacity="0.400000006" transform="translate(14, 8)" fill="#FFFFFF">
+                            <g id="ruler/marker-copy" opacity="0.558470226" transform="translate(18, 0)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-3" opacity="0.558470226" transform="translate(18, 105)">
+                                <rect id="Rectangle" x="0" y="0" width="1" height="40" rx="0.5"></rect>
+                            </g>
+                            <g id="ruler/marker" opacity="0.602738153">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                            <g id="ruler/marker-copy-2" opacity="0.602738153" transform="translate(0, 86)">
+                                <rect id="Rectangle" x="0" y="0" width="2" height="59" rx="1"></rect>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
