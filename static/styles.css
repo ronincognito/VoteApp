@@ -10,45 +10,94 @@
     --mediumGrey: #888;
     --darkGrey: #747A7A;
     --deleteRed: #990000;
+    /* page and panel, same as PhotoUploader */
+    --pageBg: #d3d3d3;
+    --cardBg: #ffffff;
+    --cardBorder: #c3c3c3;
+    --cardShadow: rgba(0,0,0,.06);
+    --logoBg: #F45E00;
+    --taglineText: #747A7A;
+    --balloonBg: #efefef;
 }
 
 /* General styles */
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #d3d3d3;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--pageBg);
     margin: 0;
-    padding: 0;
+    padding: 32px 16px;
     text-align: center;
     color: var(--bodyText);
+    -webkit-text-size-adjust: 100%;
 }
 
-h1, h2 {
-    color: var(--disabledGrey);
-    text-align: center;
-    margin-top: 0;
+/* Panel behind the controls, same as the card in PhotoUploader */
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    background: var(--cardBg);
+    border: 1px solid var(--cardBorder);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 1px 2px var(--cardShadow), 0 8px 24px var(--cardShadow);
 }
 
-h1 {
-    font-size: 32px;
-    margin-top: 16px;
+@media (max-width: 480px) {
+    body { padding: 16px; }
+    .card { padding: 20px; }
 }
 
-h2 {
-    color: var(--bodyText);
-    font-size: 16px;
-    font-weight: normal;
+/* Club logo and name at the top of the panel */
+.brand {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    text-align: left;
 }
 
-/* Message Area */
-.message {
-    width: 300px;
-    max-width: 80%;
-    margin: 0 auto;
-    text-align: center;
-    height: 30px;
-    color: var(--mediumGrey);
-    font-weight: bold;
+.logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: var(--logoBg);
+    color: #ffffff;
+}
+
+.club {
+    font-weight: 700;
     font-size: 18px;
+    letter-spacing: .02em;
+    line-height: 1.5;
+}
+
+.tagline {
+    color: var(--taglineText);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Message Area: left-aligned with the keypad, room for two lines so the controls don't move */
+.message {
+    width: 260px;
+    max-width: 100%;
+    margin: 0;
+    text-align: left;
+    height: 40px;
+    line-height: 1.3;
+    color: var(--bodyText);
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .message.regular {
@@ -69,8 +118,8 @@ h2 {
 
 .keypad-container {
     justify-content: center;
-    max-width: 250px;
-    margin-top: 30px;
+    max-width: 260px;
+    margin-top: 20px;
 }
 
 /* Check icon centered over the keypad/slider once the vote is received */
@@ -102,6 +151,11 @@ h2 {
 /* dim the slider while it is locked, but not the check icon on top of it */
 #slider-container.dimmed > :not(.check-ok) {
     opacity: 0.2;
+}
+
+/* the empty light grey balloon stays visible on the white panel (stealth.css dims it) */
+#slider-container.dimmed > #valueDisplayContainer {
+    opacity: 1;
 }
 
 /* Keypad */
@@ -141,6 +195,7 @@ button:disabled,
 }
 
 .keypad button:disabled {
+    background-color: var(--disabledUltraGrey);
     color: transparent; /* inactive keypad shows no digits */
 }
 
@@ -154,26 +209,33 @@ button:hover:not(:disabled) {
 }
 
 #voteBtn {
+    align-self: stretch;
     margin-top: 30px;
-    width: 100%;
-    max-width: 250px;
-    border-radius: 30px;
+    padding: 11px 18px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
 }
 
 /* Slider Input Styling */
+/* The slider scales down with the panel on narrow phones: cqw is 1% of #slider-container's width (350px at full size,
+   where 1cqw = 3.5px). Each px value is a fallback for browsers without container units. */
 #slider-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    max-width: 350px;
+    container-type: inline-size;
     height: 330px;
-    font-family: Arial, sans-serif;
-    margin-top: 50px;
+    margin-top: 40px;
 }
 
 .selected-value {
-    margin-left: 125px;
-    background: white;
+    margin: 0 auto;
+    background: var(--balloonBg);
     padding: 0;
     border-radius: 22px;
     font-weight: normal;
@@ -203,9 +265,11 @@ button:hover:not(:disabled) {
 
 .scale-container {
     position: relative;
-    width: 350px;
+    width: 100%;
     height: 80px;
+    height: 22.857cqw;
     margin-top: -10px;
+    margin-top: -2.857cqw;
 }
 
 .scale-image {
@@ -221,11 +285,14 @@ button:hover:not(:disabled) {
     position: relative;
     width: 100%;
     margin: 10px 0;
+    margin: 2.857cqw 0;
 }
 
 .slider {
     margin-top: 66px;
+    margin-top: 18.857cqw;
     margin-left: -7px;
+    margin-left: -2cqw;
     width: 104%;
     -webkit-appearance: none;
     appearance: none;
@@ -239,7 +306,9 @@ button:hover:not(:disabled) {
 /* don't combine  the below classes, as it will causes problems */
 .slider::-moz-range-thumb {
 	width: 68px;
+	width: 19.43cqw;
 	height: 68px;
+	height: 19.43cqw;
     box-shadow: none;
 	background: url('images/thumb-image.svg') no-repeat center center;
 	background-size: contain;
@@ -261,7 +330,9 @@ button:hover:not(:disabled) {
 .slider::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	width: 68px;
+	width: 19.43cqw;
 	height: 68px;
+	height: 19.43cqw;
     box-shadow: none;
 	background: url('images/thumb-image.svg') no-repeat center center;
 	background-size: contain;
@@ -274,11 +345,11 @@ button:hover:not(:disabled) {
 
 /* Options Row */
 .options-row {
-    width: 250px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-top: 40px;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 28px;
 }
 
 #inputModeButton, #refreshBtn, #stealthToggleBtn {

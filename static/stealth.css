@@ -11,20 +11,23 @@
     --mediumGrey: #aaa;
     --darkGrey: #444;
     --deleteRed: #990000;
+    /* page and panel, same as PhotoUploader's dark mode */
+    --pageBg: #000000;
+    --cardBg: #111111;
+    --cardBorder: #2a2a2a;
+    --cardShadow: rgba(0,0,0,0);
+    --logoBg: #777777;
+    --taglineText: #777777;
+    --balloonBg: #999999;
 }
 
 /* General styles */
 body { /* changed */
-   font-family: Arial, sans-serif;
-   background-color: #000; /* #d3d3d3; */
-   margin: 0;
-   padding: 0;
-   text-align: center;
-   color: var(--bodyText);
+   color: #aaaaaa;
 }
 
-h1, h2 { /* changed */
-	color: var(--disabledGrey);
+.message { /* changed: --bodyText is too dark on the black panel */
+	color: #aaaaaa;
 }
 
 .message.important { /* changed: warnings such as 'Je hebt al gestemd' stay orange (--accentOrange is grey in this mode) */
@@ -56,7 +59,7 @@ h1, h2 { /* changed */
 
 #voteBtn:disabled {  /* changed (disabled keypad buttons are styled above) */
 	background-color: var(--disabledGrey);
-	color: black;
+	color: #555555;
 	cursor: not-allowed;
 }
 
@@ -67,13 +70,14 @@ h1, h2 { /* changed */
 
 #voteBtn {
 	color: white;
-	border-radius: 30px;
 }
 	
 /* slider input related styling */
 
-.selected-value {  /* changed */
-	background: #999999;
+/* the balloon is dimmed until the first slide and while the slider is locked */
+#valueDisplayContainer.idle,
+#slider-container.dimmed > #valueDisplayContainer {  /* changed */
+	opacity: 0.2;
 }
 
 .whole-number { /* changed */

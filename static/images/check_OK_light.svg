@@ -5,7 +5,7 @@
         <path d="M204,102 C204,158.333044 158.333044,204 102,204 C45.6669555,204 0,158.333044 0,102 C0,45.6669555 45.6669555,0 102,0 C158.333044,0 204,45.6669555 204,102 Z" id="path-1"></path>
     </defs>
     <g id="check_OK_light" stroke="none" fill="none" xlink:href="#path-1">
-        <circle id="Oval-2" fill="#FFFFFF" fill-rule="evenodd" cx="102" cy="102" r="102"></circle>
-        <polyline id="Path" stroke="#1F7FDB" stroke-width="18.2077581" stroke-linecap="round" points="65 106.198557 92.5006117 134 139.384922 70"></polyline>
+        <circle id="Oval-2" fill="#1F7FDB" fill-rule="evenodd" cx="102" cy="102" r="102"></circle>
+        <polyline id="Path" stroke="#FFFFFF" stroke-width="18.2077581" stroke-linecap="round" points="65 106.198557 92.5006117 134 139.384922 70"></polyline>
     </g>
 </svg>

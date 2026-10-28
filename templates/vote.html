@@ -13,10 +13,18 @@
 </head>
 <body>
 <div class="content-container">
-	<h1>FOTO BEOORDELEN</h1> 
-	<p id="voteStatus" class="message">Selecteer je score<br></p>
-	{% if voting_open %} 
-	   
+	<main class="card">
+	<header class="brand">
+		<div class="logo" aria-hidden="true">
+			<svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M9 4 7.2 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.2L15 4H9Zm3 5a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/></svg>
+		</div>
+		<div>
+			<div class="club">FGW</div>
+			<div class="tagline">Foto's beoordelen</div>
+		</div>
+	</header>
+	<p id="voteStatus" class="message">Selecteer je score</p>
+	<!-- keypad and slider are always shown; while voting is closed they stay disabled -->
 		<div id="keypad-container" class="keypad-container">
 		   <div class="keypad">
 		   <!-- Keypad buttons in the desired layout -->
@@ -51,13 +59,8 @@
 			<img class="check-ok" src="static/images/check_OK_light.svg" alt="Stem ontvangen">
 		</div>
 	   
-	   <button id="voteBtn" disabled>BEVESTIG CIJFER </button>
-	   
-	{% else %} 
-		<!-- don't show number selector just fill the space  -->
-		<div style="height: 451px"></div> 
-		
-	{% endif %}
+	   <button id="voteBtn" disabled{% if not voting_open %} style="visibility: hidden"{% endif %}>Bevestig score</button>
+	</main>
 	
 	<!-- div along bottom that holds some options -->
 	<div class="options-row">
@@ -138,7 +141,7 @@
 			});
 			// Disable and dim the entire slider control,
 			document.getElementById("slider-container").classList.add("dimmed");
-			valueDisplayContainer.style.opacity = ""; // drop the inline opacity set while sliding, so the 'dimmed' rule applies to the balloon too
+			valueDisplayContainer.classList.remove("idle"); // the 'dimmed' rule takes over
 			selectedValue = null;
 			// reset slider value so vote stays anonymous
 			slider.value = 5.5; // default
@@ -170,9 +173,6 @@
 			})
 			.catch(() => unlockVoteInput()); // check failed: let the user vote, the server still rejects a double vote
 		}
-	{% else %}
-		// when voting is not open, no need to show the input mode button yet
-		document.getElementById("inputModeButton").style.visibility = "hidden";
 	{% endif %}
 
 	// stylysheet handling -----------------------------------------------------------
@@ -215,7 +215,7 @@
 	let reloading = false;
 
 	if (!pageVotingState) {
-		document.getElementById('voteStatus').innerHTML = "Je kunt nog niet stemmen<br>Probeer het later"
+		document.getElementById('voteStatus').innerHTML = "Je kunt nog niet stemmen"
 	}
 
 	function handleVotingState(votingStatus) {
@@ -297,7 +297,7 @@
 	function updateSliderValue() {
 		const sliderValueText = slider.value;
 		selectedValue = parseFloat(sliderValueText);
-		valueDisplayContainer.style.opacity = "1";
+		valueDisplayContainer.classList.remove("idle");
 		updateMessage();
 	}
 
@@ -310,7 +310,7 @@
 		valueDisplay.innerHTML = `<span class="whole-number">${Math.floor(selectedValue)}</span><span class="tenths">.${(selectedValue * 10) % 10}</span>`;		
 	}	
 	
-	valueDisplayContainer.style.opacity = "0.2";
+	valueDisplayContainer.classList.add("idle"); // dimmed until the first slide (only in dark mode, see stealth.css)
 	slider.addEventListener("input", updateSliderValue);
         
 	// option row buttons ----------------------------------------------------
