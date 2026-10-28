@@ -211,7 +211,8 @@ button:hover:not(:disabled) {
 #voteBtn {
     align-self: stretch;
     margin-top: 30px;
-    padding: 11px 18px;
+    height: 50px; /* same as the buttons in PhotoUploader */
+    padding: 0 18px;
     font-family: inherit;
     font-size: 16px;
     font-weight: 600;
