@@ -4,6 +4,7 @@ Voting app for photo club evenings. During a review, members score each photo fr
 
 - Voting page: `https://yourclub.synology.me` (example address)
 - Admin page: `https://yourclub.synology.me/admin` (protected by a code)
+- `https://yourclub.synology.me/upload` forwards to the photo upload app (PhotoUploader) on port 8443 of the same address; set the `UPLOAD_URL` environment variable to forward elsewhere
 
 ## How it works
 

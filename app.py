@@ -145,6 +145,14 @@ def apple_touch_icon():
 def favicon():
     return app.send_static_file('images/favicon.ico')
 
+@app.route('/upload')
+@app.route('/upload/')
+def upload_redirect():
+    # Short address for the photo upload app (PhotoUploader), which runs on its own HTTPS port on the same NAS.
+    # Set UPLOAD_URL to send visitors somewhere else.
+    url = os.environ.get('UPLOAD_URL') or f"https://{request.host.split(':')[0]}:8443/"
+    return redirect(url)
+
 @app.route('/admin')
 @admin_required
 def admin_page():
