@@ -142,6 +142,12 @@ body {
     display: block;
 }
 
+/* with the check icon the keypad/slider underneath is hidden; it keeps its space so nothing moves */
+.vote-received .keypad,
+.vote-received #slider-container > :not(.check-ok) {
+    visibility: hidden;
+}
+
 /* the slider area starts 20px lower and is 20px shorter than the keypad (margin-top 50 vs 30, height 330 vs 350),
    so its center is 10px lower: shift the icon up so it doesn't jump when toggling keypad/slider */
 #slider-container .check-ok {
