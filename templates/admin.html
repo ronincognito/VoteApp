@@ -177,7 +177,7 @@
 					});
 					console.log('voteCounts:', voteCounts);
 					
-					let maxValue =10; // vertical scale assumes max nr of occurrences of a single vote value
+					let maxValue = Math.max(10, ...voteCounts); // vertical scale: 10 votes per value, more when a bar needs it (otherwise its top is cut off)
 					document.getElementById('chartContainer').style.display = 'block'; // Show the chart
 		
 					// Create a new chart instance
