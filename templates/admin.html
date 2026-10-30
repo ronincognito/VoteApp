@@ -192,7 +192,8 @@
 								borderWidth: 0,
 								barThickness: 10,
 								borderRadius: { topLeft: 5, topRight: 5 },
-								borderSkipped: 'bottom'
+								borderSkipped: 'bottom',
+								minBarLength: 10 // the rounding is at most half the bar's height: a single vote stays round on a tall scale
 							}]
 						},
 						options: {
