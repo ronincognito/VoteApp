@@ -9,304 +9,49 @@
 	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/admin/favicon-192x192.png') }}">
 	<title>FGW Beheer</title>
 	<meta name="apple-mobile-web-app-title" content="FGW Beheer"> <!-- name under the home screen icon on iOS -->
-	<!-- -->
-	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> 
-	<!-- -->
-<style>	
-	
-	/* Main Buttons */
- 	#closeVoteBtn, #openVoteBtn, #confirmDownloadBtn  {
-		padding: 10px 20px;
-		font-size: 18px;
-		width: 240px;
-		margin-top: 15px;
-		padding: 10px 20px;
-		font-size: 18px;
-		width: 240px;
-		margin-top: 15px;
-	}
-	
-	#result {
-		font-size: 20px;
-		color: black;
-		text-align: right;
-	}
-	
-	#voteCount {
-		height: 300px;
-		color: var(--disabledUltraGrey);
-		font-size: 255px;
-		font-weight: normal;
-	}
-
-	#openVoteBtn, #confirmDownloadBtn  {
-		background-color: var(--accentBlue);
-	}
-
-	#closeVoteBtn {
-		background-color: var(--accentOrange);
-	}
-
-	/* Vote Chart */
-	#voteChart {
-		width: 100%;
-		margin: 0 auto;
-		padding: 50px;
-	}
-
-	/* button to access to stored results  */
-	#storedResultsBtn {
-		background-color: var(--darkGrey);
-		padding: 10px 20px;
-		font-size: 11px;
-		border-radius: 25px;
-		position: absolute;
-		bottom: 60px; /* leaves room for the UITLOGGEN button below it */
-		left: 50%;
-		transform: translateX(-50%);
-	}
-
-	/* log out, small below the stored results button */
-	#logoutBtn {
-		position: absolute;
-		bottom: 8px;
-		left: 50%;
-		transform: translateX(-50%);
-		background-color: transparent;
-		color: var(--mediumGrey);
-		font-size: 11px;
-	}
-
-	/* Overlay Styles */
-	.overlay {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0, 0, 0, 0.4);
-		z-index: 1000;
-	}
-
-	.overlay-content {
-		position: relative;
-		top: 50%;
-		left: 50%;
-		width: 80%;
-		height: 70%;
-		transform: translate(-50%, -50%);
-		background-color: #fff;
-		padding: 20px;
-		text-align: center;
-		border-radius: 12px;
-	}
-
-	.overlay-content h1 {
-		margin-top: 40px;
-		margin-bottom: 20px;
-		font-size: 24px;
-	}
-
-	.overlay-content h2, .overlay-content p {
-		margin-bottom: 20px;
-	}
-	
-	.overlay-content p {
-		font-size: 12px;
-	}
-
-
-	table {
-		width: 100%;
-		border-collapse: collapse;
-		font-size: 11px;
-	}
-	
-	th, td {
-		border: 1px solid black;
-		padding: 5px;
-		text-align: left;
-	}
-	
-	th {
-		background-color: #f2f2f2;
-	}
-	
-	/* Set a fixed width for some columns */
-	th:nth-child(1),
-	td:nth-child(1) {
-		width: 120px; 
-	}
-	
-	th:nth-child(2),
-	td:nth-child(2),
-	th:nth-child(3),
-	td:nth-child(3)  {
-		width: 55px; 
-	}
-	
-	/* Clear Data Button */
-	#clearDataBtn, #confirmClearDataBtn, #cancelClearDataBtn {
-		padding: 5px 20px;
-		font-size: 11px;
-		border-radius: 25px;
-		background-color: var(--deleteRed);
-	}
-	
-	#clearDataBtn {
-		position: absolute;
-		bottom: 20px;
-		left: 50%;
-		transform: translateX(-50%);
-	}
-	
-	#confirmClearDataBtn {
-		/* */
-	}
-	#cancelClearDataBtn {
-		background-color: var(--accentBlue);
-	}
-
-	/* Close Overlay  */
-	#closeOverlayBtn {
-		cursor: pointer;
-		position: absolute;
-		top: 20px;
-		right: 20px;
-		width: 30px;
-		height: 30px;
-		background-image: url('static/images/close.png');
-		background-size: contain;
-		background-repeat: no-repeat;
-		background-color: transparent;
-		border: none;
-	}
-
-	#confirmDownloadBtn:disabled, #clearDataBtn:disabled  {
-		background-color: var(--disabledUltraGrey);
-		color: white;
-		cursor: not-allowed;
-	}		
-
-	/* Modal Styles */
-	.modal {
-		display: none; /* Hidden by default */
-		position: fixed; /* Stay in place */
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
-		z-index: 2000; /* Make sure it sits on top */
-		display: flex;
-		justify-content: center; /* Center horizontally */
-		align-items: center; /* Center vertically */
-	}
-	
-	.modal-content {
-		position: relative;
-		top: 50%;
-		left: 50%;
-		width: 80%;
-		max-width: 320px;
-		height: auto; /* fit the content instead of a fixed 40% of the screen */
-		transform: translate(-50%, -50%);
-		background-color: #fff;
-		padding: 20px;
-		text-align: center;
-		align-items: center;
-		border-radius: 12px;
-	}
-	
-	 /* Flex container for the label and slider */
-    #voteCheckContainer {
-      display: flex;
-      align-items: center; /* Vertically center label and slider */
-      margin-top:30px;
-    }
-
-    /* Label style */
-    #voteCheckLabel {
-      margin-right: 10px; /* Space between label and slider */
-      margin-top: 10px;
-      font-size: 16px;
-    }
-	
-	/* Style the toggle switch */
-	.switch {
-	  position: relative;
-	  display: inline-block;
-	  width: 40px;
-	  height: 22px;
-	}
-	
-	.switch input {
-	  opacity: 0;
-	  width: 0;
-	  height: 0;
-	}
-	
-	.sliderToggle {
-	  position: absolute;
-	  cursor: pointer;
-	  top: 0;
-	  left: 0;
-	  right: 0;
-	  bottom: 0;
-	  background-color: #ccc;
-	  transition: 0.4s;
-	  border-radius: 34px;
-	}
-	
-	.sliderToggle:before {
-	  position: absolute;
-	  content: "";
-	  height: 18px;
-	  width: 18px;
-	  border-radius: 50%;
-	  left: 2px;
-	  bottom: 2px;
-	  background-color: white;
-	  transition: 0.4s;
-	}
-	
-	input:checked + .sliderToggle {
-	  background-color: var(--accentBlue);
-	}
-	
-	input:checked + .sliderToggle:before {
-	  transform: translateX(18px);
-	}
-
-</style>
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
 </head>
 <body>
 <div class="content-container">
-	<h1>STEMRONDE BEHEER</h1>
-	<h2 id="voteStatus"> </h2>
-	<button id="openVoteBtn">OPEN STEMRONDE </button>
-	<button id="closeVoteBtn" style="display:none;">SLUIT STEMRONDE</button> </p>
-	<div id="voteCount"></div>
-	<p id="result"></p>
-	<canvas id="voteChart" width="400" height="200"></canvas>
-	<p><button id="storedResultsBtn">OPGESLAGEN RESULTATEN</button></p>
-	<form id="logoutForm" method="post" action="/admin/logout"><button id="logoutBtn" type="submit">UITLOGGEN</button></form>
-	
-	<!-- Toggle to control repeated vote check -->    
-	<div id="voteCheckContainer">
-	  <label for="toggleVoteCheck" id="voteCheckLabel">Stemlimiet</label>
-	  <label class="switch">
-		<input type="checkbox" id="toggleVoteCheck">
-		<span class="sliderToggle"></span>
-	  </label>
+	<main class="card admin-card">
+	<header class="brand">
+		<div class="logo admin" aria-hidden="true">
+			<svg viewBox="0 0 32 32" width="32" height="32"><path fill="currentColor" d="M18.0737619,0 C18.5795574,0 19.0179136,0.404636459 19.085353,0.910432034 L19.3888303,3.84404636 C20.4004215,4.113804 21.3108535,4.48472076 22.1875659,4.99051633 L24.4805058,3.13593256 C24.8851423,2.79873551 25.4920969,2.83245522 25.8630137,3.20337197 L28.796628,6.1369863 C29.1675448,6.50790306 29.2012645,7.11485774 28.8640674,7.5194942 L27.0094837,9.81243414 C27.4815595,10.6891465 27.886196,11.6332982 28.1559536,12.6111697 L31.089568,12.914647 C31.5953635,12.9820864 32,13.4204426 32,13.9599579 L32,18.0737619 C32,18.5795574 31.6290832,19.0179136 31.089568,19.085353 L28.1559536,19.3888303 C27.886196,20.4004215 27.5152792,21.3108535 27.0094837,22.1875659 L28.8640674,24.4805058 C29.2012645,24.8851423 29.1675448,25.4920969 28.796628,25.8630137 L25.8630137,28.796628 C25.4920969,29.1675448 24.8851423,29.2012645 24.4805058,28.8640674 L22.1875659,27.0094837 C21.3108535,27.4815595 20.3667018,27.886196 19.3888303,28.1559536 L19.085353,31.089568 C19.0516333,31.5953635 18.6132771,32 18.0737619,32 L13.9262381,32 C13.4204426,32 12.9820864,31.6290832 12.914647,31.089568 L12.6111697,28.1559536 C11.5995785,27.886196 10.6891465,27.5152792 9.81243414,27.0094837 L7.5194942,28.8640674 C7.11485774,29.2012645 6.50790306,29.1675448 6.1369863,28.796628 L3.20337197,25.8630137 C2.83245522,25.4920969 2.79873551,24.8851423 3.13593256,24.4805058 L4.99051633,22.1875659 C4.51844046,21.3108535 4.113804,20.3667018 3.84404636,19.3888303 L0.910432034,19.085353 C0.404636459,19.0516333 0,18.6132771 0,18.0737619 L0,13.9262381 C0,13.4204426 0.370916754,12.9820864 0.910432034,12.914647 L3.84404636,12.6111697 C4.113804,11.5995785 4.48472076,10.6891465 4.99051633,9.81243414 L3.13593256,7.5194942 C2.79873551,7.11485774 2.83245522,6.50790306 3.20337197,6.1369863 L6.1369863,3.20337197 C6.50790306,2.83245522 7.11485774,2.79873551 7.5194942,3.13593256 L9.81243414,4.99051633 C10.6891465,4.51844046 11.6332982,4.113804 12.6111697,3.84404636 L12.914647,0.910432034 C12.9483667,0.404636459 13.3867229,0 13.9262381,0 Z M18.7144362,15.544784 C17.938883,16.0505796 17.028451,16.3540569 16.0168599,16.3540569 C15.0389884,16.3540569 14.0948367,16.0505796 13.3192835,15.544784 C11.9030558,16.118019 10.7903056,17.2307692 10.2507903,18.7144362 C9.87987355,19.7934668 9.61011591,20.9062171 9.5426765,22.0189673 C9.47523709,22.5247629 9.91359326,22.9631191 10.4193888,22.9631191 L21.5468915,22.9631191 C22.052687,22.9631191 22.4910432,22.5247629 22.4910432,22.0189673 C22.3898841,20.8724974 22.1538462,19.7597471 21.7829294,18.7144362 C21.2434141,17.2307692 20.0969442,16.0842993 18.7144362,15.544784 Z M15.9831401,7.89041096 C13.9936776,7.89041096 12.4088514,9.47523709 12.4088514,11.43098 C12.4088514,13.4204426 14.0273973,15.0052687 15.9831401,15.0052687 C17.938883,15.0052687 19.5574289,13.4204426 19.5574289,11.4646997 C19.5574289,9.47523709 17.9726027,7.89041096 15.9831401,7.89041096 Z"/></svg>
+		</div>
+		<div>
+			<div class="club">FGW</div>
+			<div class="tagline">Stemrondebeheer</div>
+		</div>
+	</header>
+	<p id="voteStatus" class="message">Klaar om een nieuwe ronde te openen</p>
+	<div id="roundArea">
+		<div id="voteCount"></div>
+		<div id="result"></div>
+		<div id="chartContainer" style="display:none;"><canvas id="voteChart"></canvas></div>
+	</div>
+	<button id="openVoteBtn" class="wide-btn">Open nieuwe ronde</button>
+	<button id="closeVoteBtn" class="wide-btn" style="display:none;">Sluit stemronde</button>
+	</main>
+
+	<div class="below-panel">
+		<button id="storedResultsBtn">OPGESLAGEN RESULTATEN</button>
+		<!-- Toggle to control repeated vote check, shown instead of the stored results button while a round is open -->
+		<div id="voteCheckContainer">
+		  <label for="toggleVoteCheck" id="voteCheckLabel">Stemlimiet</label>
+		  <label class="switch">
+			<input type="checkbox" id="toggleVoteCheck">
+			<span class="sliderToggle"></span>
+		  </label>
+		</div>
+		<form id="logoutForm" method="post" action="/admin/logout"><button id="logoutBtn" type="submit">UITLOGGEN</button></form>
 	</div>
 	
     <div id="downloadOverlay" class="overlay">
         <div class="overlay-content">
-            <h1>RESULTATEN</h1>
+            <h1>Opgeslagen resultaten</h1>
             <p id="voteCountOverlay"></p>
-            <button id="confirmDownloadBtn">DOWNLOAD DATA</button></p>
+            <button id="confirmDownloadBtn" class="wide-btn">Download data</button>
             
              <!-- Table for showing last 20 voting results -->
 			 <div>
@@ -325,8 +70,8 @@
 					 </tbody>
 				 </table>
 			 </div>
-            <button id="clearDataBtn">WIS ALLE DATA</button></p>
-            <button id="closeOverlayBtn"></button></p>
+            <button id="clearDataBtn">WIS ALLE DATA</button>
+            <button id="closeOverlayBtn" aria-label="Sluiten"></button>
         </div>
     </div>
 
@@ -335,8 +80,8 @@
 		<div class="modal-content">
 			<h2>Alle opgeslagen stemrondes en gebruikersnummers wissen?</h2>
 			<p>Download eerst de data als je die wilt bewaren</p>
-			<button id="confirmClearDataBtn">JA, WIS ALLE DATA</button>
-			<button id="cancelClearDataBtn">ANNULEER</button>
+			<button id="confirmClearDataBtn" class="wide-btn">Ja, wis alle data</button>
+			<button id="cancelClearDataBtn" class="wide-btn">Annuleer</button>
 		</div>
 	</div>
 
@@ -378,12 +123,12 @@
 		function showOpenRound() {
 		    document.getElementById('openVoteBtn').style.display = 'none';
 		    document.getElementById('closeVoteBtn').style.display = 'block';
-		    document.getElementById('result').innerText = '';
+		    document.getElementById('result').innerHTML = '';
 		    document.getElementById('storedResultsBtn').style.display = 'none';
-		    document.getElementById('voteCheckContainer').style.display = 'block';
+		    document.getElementById('voteCheckContainer').style.display = 'flex';
 		    document.getElementById('voteCount').style.display = 'block';
 		    // Hide the chart
-		    document.getElementById('voteChart').style.display = 'none';
+		    document.getElementById('chartContainer').style.display = 'none';
 		    updateVoteCount();
 		}
 
@@ -402,9 +147,13 @@
 					
 					console.log('votes:', data.votes);
 					
-					if (!data.votes || data.votes.length === 0) return; // skip if there is no voting data
-           			
-					document.getElementById('result').innerText = `Gemiddeld - ${data.avg.toFixed(2)}\nSD - ${data.sdev.toFixed(2)}\nMediaan - ${data.median.toFixed(2)}`;
+					if (!data.votes || data.votes.length === 0) return; // skip if there is no voting data (the message stays 'Stemronde is gesloten')
+
+					document.getElementById('voteStatus').innerText = 'Resultaten van deze ronde';
+					document.getElementById('result').innerHTML =
+						`<span class="label">Gemiddeld</span><span class="value">${data.avg.toFixed(2)}</span>` +
+						`<span class="label">Standaardafwijking</span><span class="value">${data.sdev.toFixed(2)}</span>` +
+						`<span class="label">Mediaan</span><span class="value">${data.median.toFixed(2)}</span>`;
 
 					// Destroy existing chart instance if it exists
 					if (voteChartInstance !== null) {
@@ -429,7 +178,7 @@
 					console.log('voteCounts:', voteCounts);
 					
 					let maxValue =10; // vertical scale assumes max nr of occurrences of a single vote value
-					document.getElementById('voteChart').style.display = 'block'; // Show the chart
+					document.getElementById('chartContainer').style.display = 'block'; // Show the chart
 		
 					// Create a new chart instance
 					const ctx = document.getElementById('voteChart').getContext('2d');
@@ -438,14 +187,17 @@
 						data: {
 							labels: bins,
 							datasets: [{
-								data: voteCounts,
-								backgroundColor: '#ffffff',
-								borderColor: 'rgba(54, 162, 235, 1)',
+								data: voteCounts.map(n => n || null), // no stub for empty bins
+								backgroundColor: '#c3c3c3',
 								borderWidth: 0,
-								borderRadius: 30 // Adjust this value to change the roundness of the bar corners
+								barThickness: 10,
+								borderRadius: { topLeft: 5, topRight: 5 },
+								borderSkipped: 'bottom'
 							}]
 						},
 						options: {
+							maintainAspectRatio: false, // fill #chartContainer
+							animation: false,
 							plugins: {
 								legend: {
 									display: false // Hides the legend
@@ -455,6 +207,20 @@
 								x: {
 									grid: {
 										display: false // Hides vertical gridlines (x-axis)
+									},
+									border: {
+										display: false
+									},
+									ticks: {
+										autoSkip: false,
+										maxRotation: 0,
+										color: '#222222',
+										font: { size: 11, weight: 300 },
+										// bars are per half point, label only the whole numbers
+										callback: function(value) {
+											const label = this.getLabelForValue(value);
+											return label.endsWith('.0') ? String(parseInt(label)) : '';
+										}
 									}
 								},
 								y: {

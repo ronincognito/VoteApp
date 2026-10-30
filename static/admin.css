@@ -1,0 +1,350 @@
+/* Admin pages: the panel and header of the vote page (styles.css), with a grey gear logo.
+   The login page uses the same box without the panel: you're at the front door, not inside yet. */
+
+.logo.admin {
+    background: #aaaaaa;
+}
+
+.message {
+    font-size: 18px;
+}
+
+/* login: same position as the panel, so the header doesn't move after logging in */
+.card.bare {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+/* the admin panel is as high as the vote page's panel */
+.card.admin-card {
+    min-height: 589px;
+}
+
+/* Large buttons, 50px high like the vote page's "Bevestig score" */
+.wide-btn {
+    align-self: stretch;
+    height: 50px;
+    padding: 0 18px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+#openVoteBtn, #confirmDownloadBtn, #loginBtn, #cancelClearDataBtn {
+    background-color: var(--accentBlue);
+}
+
+#closeVoteBtn {
+    background-color: var(--accentOrange);
+}
+
+#confirmClearDataBtn {
+    background-color: var(--deleteRed);
+}
+
+/* Login */
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 260px;
+    max-width: 100%;
+    margin-top: 28px;
+}
+
+#code {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 50px;
+    padding: 0 14px;
+    font-family: inherit;
+    font-size: 24px;
+    letter-spacing: 8px;
+    text-align: center;
+    background: #ffffff;
+    border: 3px solid transparent;
+    border-radius: 10px;
+}
+
+#code:focus {
+    outline: none;
+    border-color: var(--accentBlue);
+}
+
+/* Round area between the message and the button: vote count, or the results of the closed round */
+#roundArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#voteCount {
+    margin: auto 0; /* centered in the round area */
+    color: #aaaaaa;
+    font-size: 235px;
+    font-weight: bold;
+    letter-spacing: -4px;
+    line-height: 1;
+}
+
+#result {
+    display: grid;
+    grid-template-columns: max-content auto;
+    column-gap: 32px;
+    row-gap: 8px;
+    width: 260px;
+    max-width: 100%;
+    margin: 12px 0 0;
+    text-align: left;
+    font-size: 16px;
+}
+
+#result .label {
+    font-weight: 300;
+}
+
+#result .value {
+    color: var(--accentBlue);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+#chartContainer {
+    position: relative;
+    width: 100%;
+    height: 130px;
+    margin: auto 0; /* centered in the space below the results */
+}
+
+/* Below the panel: stored results (or the vote limit while a round is open) and log out */
+.below-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 28px;
+}
+
+#storedResultsBtn {
+    background-color: var(--darkGrey);
+    padding: 10px 20px;
+    font-size: 11px;
+    border-radius: 25px;
+}
+
+#voteCheckContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 36px; /* same as the stored results button it replaces, so UITLOGGEN stays put */
+    font-size: 14px;
+}
+
+#logoutBtn {
+    margin-top: 24px;
+    background-color: transparent;
+    color: var(--mediumGrey);
+    font-size: 11px;
+}
+
+/* Toggle switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.sliderToggle {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.sliderToggle:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+}
+
+input:checked + .sliderToggle {
+    background-color: var(--accentBlue);
+}
+
+input:checked + .sliderToggle:before {
+    transform: translateX(18px);
+}
+
+/* Stored results overlay, in a panel like the main screen */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+}
+
+.overlay-content {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    width: calc(100% - 32px);
+    max-width: 480px;
+    height: 80%;
+    overflow-y: auto;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--cardBg);
+    border: 1px solid var(--cardBorder);
+    border-radius: 14px;
+    padding: 20px 20px 70px; /* room for WIS ALLE DATA at the bottom */
+    text-align: center;
+}
+
+.overlay-content h1 {
+    align-self: stretch;
+    margin: 10px 40px 8px 0; /* clear of the close button */
+    color: var(--bodyText);
+    font-size: 18px;
+    text-align: left;
+}
+
+.overlay-content p {
+    align-self: stretch;
+    margin: 0 0 16px;
+    color: var(--darkGrey);
+    font-size: 14px;
+    text-align: left;
+}
+
+#confirmDownloadBtn {
+    flex-shrink: 0;
+    margin-bottom: 20px;
+}
+
+#confirmDownloadBtn:disabled, #clearDataBtn:disabled {
+    background-color: var(--disabledUltraGrey);
+    color: var(--darkGrey);
+    cursor: not-allowed;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Set a fixed width for some columns */
+th:nth-child(1),
+td:nth-child(1) {
+    width: 120px;
+}
+
+th:nth-child(2),
+td:nth-child(2),
+th:nth-child(3),
+td:nth-child(3) {
+    width: 55px;
+}
+
+#clearDataBtn {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 20px;
+    font-size: 11px;
+    border-radius: 25px;
+    background-color: var(--deleteRed);
+}
+
+#closeOverlayBtn {
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    background-image: url('images/close.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none;
+}
+
+/* Delete confirmation, in the same panel style */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+}
+
+.modal-content {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    width: calc(100% - 32px);
+    max-width: 360px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: var(--cardBg);
+    border: 1px solid var(--cardBorder);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: left;
+}
+
+.modal-content h2 {
+    margin: 0;
+    color: var(--bodyText);
+    font-size: 18px;
+}
+
+.modal-content p {
+    margin: 0 0 8px;
+    color: var(--darkGrey);
+    font-size: 14px;
+}
