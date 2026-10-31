@@ -370,3 +370,12 @@ button:hover:not(:disabled) {
     width: 46px;
     height: 46px;
 }
+
+/* inactive while the check icon hides the keypad/slider */
+#inputModeButton:disabled {
+    cursor: default;
+}
+
+#inputModeButton:disabled img {
+    opacity: 0.3;
+}

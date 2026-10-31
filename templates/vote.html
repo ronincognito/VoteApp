@@ -132,7 +132,10 @@
 		function lockVoteInput(showCheck) {
 			document.getElementById('voteBtn').disabled = true; // Disable submit button
 			document.getElementById('voteBtn').style.visibility = 'hidden'; // and hide it, makes clear the vote was received (keeps its space so the layout doesn't jump)
-			if (showCheck) document.body.classList.add('vote-received'); // shows the check icon over the keypad/slider (see .check-ok in styles.css)
+			if (showCheck) {
+				document.body.classList.add('vote-received'); // shows the check icon over the keypad/slider (see .check-ok in styles.css)
+				document.getElementById('inputModeButton').disabled = true; // the keypad/slider is hidden, so there is nothing to switch
+			}
 			voteSubmitted = true; // Mark vote as submitted
 
 			// Disable all keypad buttons and grey them out
