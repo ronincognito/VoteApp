@@ -1,5 +1,7 @@
 # Running the vote app on a Synology NAS
 
+> **Legacy.** This is the previous setup, without Docker (DSM 6.2, the old NAS Godzilla). The app now runs in Docker; see [Running on Synology with Docker](Running%20on%20Synology%20with%20Docker.md). This guide is kept for reference and for systems without Docker.
+
 These instructions are written for a Synology NAS with DSM. Much of it (git, Python, starting, stopping, updating, the admin code) also applies to other NAS brands and Linux systems; see [Other NAS or Linux systems](#other-nas-or-linux-systems) at the end for what to use instead of the Synology-specific parts.
 
 The app lives in `~/VoteApp`, in the home folder of a DSM user on the NAS. That folder is a clone of the GitHub repo https://github.com/ronincognito/VoteApp. Make changes on the Mac, push them to GitHub, then pull them onto the NAS.
