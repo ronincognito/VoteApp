@@ -10,6 +10,10 @@ services:
     # DSM user that owns the files in data/ (on the NAS: `id`), so they stay editable via
     # File Station and SSH. Different on your NAS? Set APP_UID / APP_GID in .env.
     user: "${APP_UID:-1026}:${APP_GID:-100}"
+    # DSM gives write access to the shared folder "docker" through its ACL, to the group
+    # administrators (101). Your own login has that group, the container only gets it this way.
+    group_add:
+      - "${APP_ADMIN_GID:-101}"
     ports:
       - "8080:8080"   # DSM's reverse proxy sends https://...:443 to localhost:8080
     volumes:

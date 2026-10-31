@@ -34,11 +34,13 @@ The repo is cloned into `/volume1/docker/VoteApp`. The container gets the code f
    $ id
    uid=1026(Ron) gid=100(users) ...
    ```
-   The container runs as 1026:100 (`docker-compose.yml`), so the files in `data/` stay yours. If `id` shows other numbers, put them in a file `.env` next to `docker-compose.yml` (not on GitHub):
+   The container runs as 1026:100 (`docker-compose.yml`), so the files in `data/` stay yours. It also gets the group `administrators` (101): the shared folder `docker` only gives write access to that group (DSM's ACL, the `+` in `ls -l`), and without it the app can't create files or folders in `data/`. If `id` shows other numbers, put them in a file `.env` next to `docker-compose.yml` (not on GitHub):
    ```
    APP_UID=1027
    APP_GID=100
+   APP_ADMIN_GID=101
    ```
+   (`APP_ADMIN_GID` is the number shown for `administrators` in the `groups=` part.)
 
 5. Optional, when moving from the old NAS: copy the results and the admin code. Stop the app on the old NAS first, so the file doesn't change while copying. From the Mac:
    ```
