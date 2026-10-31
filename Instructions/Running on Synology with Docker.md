@@ -8,7 +8,8 @@ The repo is cloned into `/volume1/docker/VoteApp`. The container gets the code f
 
 | Example | What it is |
 |---|---|
-| `Ron` | DSM user that runs the app (an administrator, for `sudo`) |
+| `Ron` | your own DSM user (an administrator, for `sudo`) |
+| `dockerapps` | DSM user without admin rights that the containers run as |
 | `Kong.local` | the NAS on the home network |
 | `yourclub.synology.me` | the DDNS address members use |
 
@@ -29,18 +30,13 @@ The repo is cloned into `/volume1/docker/VoteApp`. The container gets the code f
    $ mkdir -p data
    ```
 
-4. Check your user and group numbers:
+4. Let the container run as the user `dockerapps` (see [A user for the containers](#a-user-for-the-containers); create that user first, once for all apps). Put its number in a file `.env` next to `docker-compose.yml` (not on GitHub) and make it the owner of `data/`:
    ```
-   $ id
-   uid=1026(Ron) gid=100(users) ...
+   $ echo 'APP_UID=1027' >> .env
+   $ echo 'APP_ADMIN_GID=100' >> .env
+   $ sudo chown -R 1027:100 data
    ```
-   The container runs as 1026:100 (`docker-compose.yml`), so the files in `data/` stay yours. It also gets the group `administrators` (101): the shared folder `docker` only gives write access to that group (DSM's ACL, the `+` in `ls -l`), and without it the app can't create files or folders in `data/`. If `id` shows other numbers, put them in a file `.env` next to `docker-compose.yml` (not on GitHub):
-   ```
-   APP_UID=1027
-   APP_GID=100
-   APP_ADMIN_GID=101
-   ```
-   (`APP_ADMIN_GID` is the number shown for `administrators` in the `groups=` part.)
+   Use the number that `id dockerapps` shows instead of 1027.
 
 5. Optional, when moving from the old NAS: copy the results and the admin code. Stop the app on the old NAS first, so the file doesn't change while copying. From the Mac:
    ```
@@ -59,6 +55,31 @@ The repo is cloned into `/volume1/docker/VoteApp`. The container gets the code f
 The container starts by itself after a reboot (`restart: unless-stopped`), so no Task Scheduler task is needed.
 
 Instead of step 6 you can also use the DSM interface: *Container Manager > Project > Create*, path `/docker/VoteApp`; it finds the existing `docker-compose.yml`. Both ways give the same project.
+
+## A user for the containers
+
+The apps are reachable from the internet. If someone ever managed to break out of a container, they would have the rights of the user the container runs as. With your own account (an administrator) that is read and write access to every shared folder. A separate user without admin rights limits that to the `docker` folder. One such user serves all apps in `/volume1/docker`.
+
+Once, in DSM, *Control Panel > User & Group > Create*:
+
+- Name `dockerapps`, a long random password (it's never used to log in).
+- Groups: only `users`, **not** `administrators`.
+- Shared folder permissions: `docker` Read/Write, all others No access.
+- Applications: Deny for all (DSM, File Station, SSH, SMB, ...).
+
+Then look up its number over SSH:
+```
+$ id dockerapps
+uid=1027(dockerapps) gid=100(users) groups=100(users)
+```
+
+For each app, `.env` gets `APP_UID=<that number>` and `APP_ADMIN_GID=100`, and `data/` belongs to `dockerapps` (step 4 above). `APP_ADMIN_GID=100` replaces the group `administrators` that `docker-compose.yml` adds by default: that default is only needed when the container runs as your own user, because DSM's ACL on the `docker` folder gives write access to administrators and to users granted it explicitly, such as `dockerapps`. You keep full access to `data/` yourself, through your administrator rights. `git pull` and `docker compose` are still run as yourself.
+
+A new folder created by you inside `data/` (or `config/`) belongs to you; if the app has to write in it, give it to `dockerapps` as well: `sudo chown -R 1027:100 data`.
+
+Without `.env` the container runs as 1026:100 plus the group `administrators` (101), the first DSM user. That works, but without the protection above.
+
+Both apps also run with `cap_drop: [ALL]` and `no-new-privileges` (in `docker-compose.yml`): no special Linux privileges and no way to become root inside the container.
 
 ## Updating with the latest version from GitHub
 
