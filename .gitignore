@@ -10,3 +10,6 @@ data/
 # local design files, not published
 Design/voteApp.sketch
 Design/Stem instructie.jpg
+
+# local settings for docker compose (UID)
+.env

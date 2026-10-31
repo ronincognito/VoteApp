@@ -188,7 +188,7 @@ The steps for git, the venv, starting, stopping, updating, the admin code and th
 | DDNS `synology.me` | the brand's own service (QNAP: myQNAPcloud), or a free one such as DuckDNS |
 | Certificate and reverse proxy in DSM | the NAS's own reverse proxy (QNAP has one), or Caddy or nginx, which can also get the Let's Encrypt certificate |
 
-On TrueNAS and Unraid, apps normally run in Docker rather than directly on the system; the app would then need a Dockerfile, which the repo doesn't have yet.
+On TrueNAS and Unraid, apps normally run in Docker rather than directly on the system; the repo's `Dockerfile` and `docker-compose.yml` can be used there, see [Running on Synology with Docker](Running%20on%20Synology%20with%20Docker.md).
 
 ## Notes
 

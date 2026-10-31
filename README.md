@@ -40,7 +40,7 @@ Built with Python and Flask, with plain HTML, CSS and JavaScript pages. The app 
 
 This repo is meant for two kinds of installation:
 
-- **Synology NAS** (for club evenings): the app runs on the NAS behind DSM's HTTPS reverse proxy, so members can reach it from anywhere. See [Running the vote app on a Synology NAS](Instructions/Running%20App.py%20on%20Synology.md). A section near the end explains what to use instead on other NAS brands or Linux systems.
+- **Synology NAS** (for club evenings): the app runs on the NAS behind DSM's HTTPS reverse proxy, so members can reach it from anywhere. With Docker (DSM 7.2, Container Manager), see [Running the vote app on a Synology NAS with Docker](Instructions/Running%20on%20Synology%20with%20Docker.md). Without Docker (DSM 6.2), see [Running the vote app on a Synology NAS](Instructions/Running%20App.py%20on%20Synology.md); a section near the end explains what to use instead on other NAS brands or Linux systems.
 - **Mac** (for testing): runs the app on the home network, with its own test data. See [Running the vote app on a Mac](Instructions/Running%20App.py%20on%20macOS.md).
 
 Both guides cover first-time setup, starting, stopping, updating and the admin code.

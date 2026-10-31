@@ -1,0 +1,19 @@
+# Synology (Container Manager) or Mac (Docker Desktop):
+#   docker compose up -d --build
+# See Instructions/Running on Synology with Docker.md
+services:
+  voteapp:
+    build: .
+    image: voteapp:latest
+    container_name: voteapp
+    restart: unless-stopped
+    # DSM user that owns the files in data/ (on the NAS: `id`), so they stay editable via
+    # File Station and SSH. Different on your NAS? Set APP_UID / APP_GID in .env.
+    user: "${APP_UID:-1026}:${APP_GID:-100}"
+    ports:
+      - "8080:8080"   # DSM's reverse proxy sends https://...:443 to localhost:8080
+    volumes:
+      - ./data:/app/data
+    environment:
+      TZ: Europe/Amsterdam
+      # UPLOAD_URL: https://example.synology.me:8443/   # where /upload forwards to (default: same host, port 8443)
