@@ -2,8 +2,8 @@
 
 Voting app for photo club evenings. During a review, members score each photo from 1 to 10 on their own phone, and the club gets the average score straight away. No app to install: members open a web page.
 
-- Voting page: `https://yourclub.synology.me` (example address)
-- Admin page: `https://yourclub.synology.me/admin` (protected by a code)
+- Voting page: `https://yourclub.synology.me` (example address), also via `https://yourclub.synology.me/stem`
+- Admin page: `https://yourclub.synology.me/admin` (protected by a code), also via `https://yourclub.synology.me/stem_admin`
 - `https://yourclub.synology.me/upload` forwards to the photo upload app (PhotoUploader) on port 8443 of the same address; set the `UPLOAD_URL` environment variable to forward elsewhere
 - `https://yourclub.synology.me/upload_admin` forwards to the admin page of the photo upload app (`/admin` at that same address)
 

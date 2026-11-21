@@ -70,8 +70,8 @@ Addresses (work from the club and from home):
 
 | Page | Address |
 |---|---|
-| Vote page | https://yourclub.synology.me |
-| Admin page | https://yourclub.synology.me/admin |
+| Vote page | https://yourclub.synology.me (or /stem) |
+| Admin page | https://yourclub.synology.me/admin (or /stem_admin) |
 
 For testing on the home network only, the app can also be reached directly at http://SynologyNAS.local:8080 or http://192.168.178.111:8080 (and `/admin`). The app itself runs on port 8080 (see `app.py`); the HTTPS address goes through the Synology reverse proxy, see [HTTPS setup](#https-setup-how-it-works) below.
 

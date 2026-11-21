@@ -135,6 +135,18 @@ def home():
     else:
         return render_template('vote.html', voting_open=False)
 
+@app.route('/stem')
+@app.route('/stem/')
+def vote_redirect():
+    # Short address for the vote page, easy to say on a club evening, next to /upload.
+    return redirect(url_for('home'))
+
+@app.route('/stem_admin')
+@app.route('/stem_admin/')
+def vote_admin_redirect():
+    # Short address for the admin page, next to /upload_admin.
+    return redirect(url_for('admin_page'))
+
 @app.route('/apple-touch-icon.png')
 @app.route('/apple-touch-icon-precomposed.png')
 def apple_touch_icon():
