@@ -145,13 +145,22 @@ def apple_touch_icon():
 def favicon():
     return app.send_static_file('images/favicon.ico')
 
+def upload_url():
+    # Address of the photo upload app (PhotoUploader), which runs on its own HTTPS port on the same NAS.
+    # Set UPLOAD_URL to send visitors somewhere else.
+    return os.environ.get('UPLOAD_URL') or f"https://{request.host.split(':')[0]}:8443/"
+
 @app.route('/upload')
 @app.route('/upload/')
 def upload_redirect():
-    # Short address for the photo upload app (PhotoUploader), which runs on its own HTTPS port on the same NAS.
-    # Set UPLOAD_URL to send visitors somewhere else.
-    url = os.environ.get('UPLOAD_URL') or f"https://{request.host.split(':')[0]}:8443/"
-    return redirect(url)
+    # Short address for the photo upload app.
+    return redirect(upload_url())
+
+@app.route('/upload_admin')
+@app.route('/upload_admin/')
+def upload_admin_redirect():
+    # Short address for the admin page of the photo upload app (its /admin, not the VoteApp's).
+    return redirect(upload_url().rstrip('/') + '/admin')
 
 @app.route('/admin')
 @admin_required

@@ -23,4 +23,4 @@ services:
       - ./data:/app/data
     environment:
       TZ: Europe/Amsterdam
-      # UPLOAD_URL: https://example.synology.me:8443/   # where /upload forwards to (default: same host, port 8443)
+      # UPLOAD_URL: https://example.synology.me:8443/   # where /upload forwards to (default: same host, port 8443); /upload_admin goes to its /admin
